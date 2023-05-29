@@ -1,0 +1,199 @@
+.container {
+  background-color: whitesmoke;
+  padding: 6px;
+  width: 350px;
+  height: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 0 20px 0 darkgrey;
+}
+
+form {
+  position: absolute;
+  margin-top: 80px;
+  transition: .5s;
+  width: 300px;
+  height: 400px;
+}
+
+.buttonsForm {
+  margin-top: 40px;
+  position: relative;
+  border-radius: 30px;
+  box-shadow: 0 0 7px 0 #128ca1;
+}
+
+.buttonsForm button {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  position: relative;
+  padding: 10px 29px;
+}
+
+.btnColor {
+  position: absolute;
+  width: 108px;
+  height: 100%;
+  background: linear-gradient(to right, #128ca1, #6dd2e4);
+  border-radius: 30px;
+  transition: .3s;
+}
+
+input[type="text"], input[type="password"]{
+  border: none;
+  margin-top: 40px;
+  border-radius: 60px;
+  padding: 8px 0 8px 35px;
+  outline: none;
+  width: 100%;
+}
+
+select {
+  border: none;
+  margin-top: 20px;
+  border-radius: 60px;
+  padding: 8px 0 8px 35px;
+  outline: none;
+  width: 100%;
+}
+
+button[type="submit"] {
+  background: #128ca1;
+  color: white;
+  border-radius: 30px;
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 8px 0 8px 15px;
+  font-size: 15px;
+  margin-top: 40px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+  box-shadow: 0px 10px 14px -7px #276873;
+  text-shadow: 0px 1px 0px #3d768a;
+  outline: none;
+}
+
+button[type="submit"]:hover{
+  background: #3e9eaf;
+}
+
+.divCheck {
+  margin: 15px 0 0 5px;
+  width: 90%;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+#signin {
+  left: 25px;
+}
+
+#signup {
+  left: 450px;
+}
+
+i {
+  position: absolute;
+  left: 0;
+  padding: 10px 10px;
+}
+
+.iEmail {
+  float: right;
+  margin-right: 6px;
+  margin-top: -20px;
+  position: relative;
+  z-index: 2;
+}
+
+.iPassword {
+  float: right;
+  margin-right: 6px;
+  margin-top: -20px;
+  position: relative;
+  z-index: 2;
+}
+
+.iPassword2 {
+  top: 190px;
+}
+
+#btnSignin{
+  color:white;
+}
+
+
+/* Modal */
+
+dialog::backdrop{
+  background-color: rgba(0, 0, 0 / .5);
+}
+
+dialog {
+  border: none;
+  border-radius: .5rem;
+  box-shadow: 0 0 1em rgba(0, 0, 0 / .3);
+  font-family: 'Varela Round', sans-serif;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  z-index:1;
+  margin: auto;
+  height: 18em;
+  }
+
+#modal-content{
+  padding: 2em;
+  text-align: center;
+}
+
+#modal-title{
+  text-transform: uppercase;
+  color: #117008;
+  font-size: x-large;
+  margin-bottom: 1em;
+  font-weight: bold;
+}
+
+.modal-text{
+  text-transform: uppercase;
+  font-size: small;
+  font-weight: bold;
+}
+
+#confirm{
+  margin-top: 3em;
+  height: 3em;
+  width: 22em;
+  background: #22c735;
+  background-image: -webkit-linear-gradient(top, #22c735, #117008);
+  background-image: -moz-linear-gradient(top, #22c735, #117008);
+  background-image: -ms-linear-gradient(top, #22c735, #117008);
+  background-image: -o-linear-gradient(top, #22c735, #117008);
+  background-image: linear-gradient(to bottom, #22c735, #117008);
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 15px;
+  padding: 10px 20px 10px 20px;
+  border: none;
+  text-transform: uppercase;
+}
+
+#confirm:hover{
+  background: #7ed68a;
+  background-image: -webkit-linear-gradient(top, #7ed68a, #6ab358);
+  background-image: -moz-linear-gradient(top, #7ed68a, #6ab358);
+  background-image: -ms-linear-gradient(top, #7ed68a, #6ab358);
+  background-image: -o-linear-gradient(top, #7ed68a, #6ab358);
+  background-image: linear-gradient(to bottom, #7ed68a, #6ab358);
+}
