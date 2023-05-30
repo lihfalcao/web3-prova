@@ -6,11 +6,11 @@ use \Framework\DW3BancoDeDados;
 
 class Vaga extends Modelo
 {
-    const BUSCAR_TODOS = 'SELECT m.texto, m.id m_id, u.id u_id, u.email FROM vagas v LEFT JOIN usuarios programador ON (m.programador = programador.id)  LEFT JOIN usuarios empresa ON (m.quem_convidou = empresa.id) ORDER BY m.id LIMIT ? OFFSET ?';
-    const BUSCAR_ID = 'SELECT * FROM mensagens WHERE id = ? LIMIT 1';
-    const INSERIR = 'INSERT INTO mensagens(usuario_id,texto) VALUES (?, ?)';
-    const DELETAR = 'DELETE FROM mensagens WHERE id = ?';
-    const CONTAR_TODOS = 'SELECT count(id) FROM mensagens';
+    const BUSCAR_TODOS = 'SELECT vagas.*, programador.nome as programador_nome, programador.criado_dia as programador_criado_dia, programador.foto as programador_foto, programador.cidade as programador_cidade, programador.uf as programador_uf, empresa.nome as empresa_nome, empresa.criado_dia as empresa_criado_dia, empresa.foto as empresa_foto, empresa.cidade as empresa_cidade, empresa.uf as empresa_uf FROM vagas v LEFT JOIN usuarios programador ON (v.programador = programador.id)  LEFT JOIN usuarios empresa ON (v.quem_convidou = empresa.id) ORDER BY v.id LIMIT ? OFFSET ?';
+    const BUSCAR_ID = 'SELECT * FROM vagas WHERE id = ? LIMIT 1';
+    const INSERIR = 'INSERT INTO vagas(usuario_id,texto) VALUES (?, ?)';
+    const DELETAR = 'DELETE FROM vagas WHERE id = ?';
+    const CONTAR_TODOS = 'SELECT count(id) FROM vagas';
     private $id;
     private $usuarioId;
     private $texto;
