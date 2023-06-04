@@ -12,7 +12,7 @@ class UsuarioControlador extends Controlador
 
     public function armazenar()
     {
-        $usuario = new Usuario($_POST['email'], $_POST['senha'], $_POST['tipo']);
+        $usuario = new Usuario($_POST['email'], $_POST['senha']);
 
         if ($usuario->isValido()) {
             $usuario->salvar();

@@ -12,6 +12,10 @@
   box-shadow: 0 0 20px 0 darkgrey;
 }
 
+body {
+  display: flex;
+}
+
 form {
   position: absolute;
   margin-top: 80px;

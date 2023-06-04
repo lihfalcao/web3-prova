@@ -20,7 +20,6 @@
       </div>
       <button type="submit">Entrar</button>
     </form>
-
     <form action="<?= URL_RAIZ . 'usuarios' ?>" method="post" enctype="multipart/form-data" id="signup">
     <div class="form-group <?= $this->getErroCss('email') ?>">
           <input name="email" placeholder='E-mail' type='text' class="form-control" autofocus value="<?= $this->getPost('email') ?>">
@@ -30,14 +29,6 @@
       </div>
       <div class="form-group <?= $this->getErroCss('senha2') ?>">
           <input name="senha2" placeholder='Confirmar Senha' class="form-control" type="password">
-      </div>
-      <div class="form-group">
-          <select name="tipo" class="form-control" required>
-            <option value="">Selecione o tipo de usuário...</option>
-            <option value="programador">Programador</option>
-            <option value="chefe">Chefe</option>
-            <option value="rh">RH</option>
-          </select>
       </div>
       <div class="divCheck">
         <input type="checkbox"  required />

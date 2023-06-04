@@ -11,18 +11,20 @@ class VagaControlador extends Controlador
         $pagina = array_key_exists('p', $_GET) ? intval($_GET['p']) : 1;
         $limit = 4;
         $offset = ($pagina - 1) * $limit;
-        $mensagens = Vaga::buscarTodos($limit, $offset);
+        $vagas = Vaga::buscarTodos($limit, $offset);
         $ultimaPagina = ceil(Vaga::contarTodos() / $limit);
-        return compact('pagina', 'mensagens', 'ultimaPagina');
+        return compact('pagina', 'vagas', 'ultimaPagina');
     }
 
     public function index()
     {
         $this->verificarLogado();
         $paginacao = $this->calcularPaginacao();
+        echo DW3Sessao::get('usuario');
         $this->visao('home/index.php', [
-            'mensagens' => $paginacao['mensagens'],
+            'vagas' => $paginacao['vagas'],
             'pagina' => $paginacao['pagina'],
+            'usuario' => DW3Sessao::get('usuario'),
             'ultimaPagina' => $paginacao['ultimaPagina'],
             'MensagemFlash' => DW3Sessao::getFlash('HomeFlash')
         ]);
@@ -33,7 +35,9 @@ class VagaControlador extends Controlador
         $this->verificarLogado();
         $vaga = new Vaga(
             DW3Sessao::get('usuario'),
-            $_POST['texto']
+            $_POST['texto'],
+            '',
+            ''
         );
         if ($vaga->isValido()) {
             $vaga->salvar();
@@ -56,7 +60,7 @@ class VagaControlador extends Controlador
     {
         $this->verificarLogado();
         $vaga = Vaga::buscarId($id);
-        if ($vaga->getUsuarioId() == $this->getUsuario()) {
+        if ($vaga->getQuemConvidou() == $this->getUsuario()) {
             Vaga::destruir($id);
             DW3Sessao::setFlash('mensagemFlash', 'Mensagem destruida.');
         } else {
