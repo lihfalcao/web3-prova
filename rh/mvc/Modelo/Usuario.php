@@ -9,7 +9,8 @@ class Usuario extends Modelo
 {
     const BUSCAR_ID = 'SELECT * FROM usuarios WHERE id = ?';
     const BUSCAR_POR_EMAIL = 'SELECT * FROM usuarios WHERE email = ? LIMIT 1';
-    const INSERIR = 'INSERT INTO usuarios(email, senha, programador, telefone, sobre, nome, sobrenome, cidade, uf, criado_dia, idade, foto, empresa, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const BUSCAR_CHEFE = 'SELECT * FROM usuarios WHERE programador = false AND admin = false LIMIT 1';
+    const INSERIR = 'INSERT INTO usuarios(email, senha, programador, telefone, sobre, nome, sobrenome, cidade, uf, criado_dia, idade, curriculo, foto, empresa, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
     private $id;
     private $email;
     private $senha;
@@ -23,6 +24,7 @@ class Usuario extends Modelo
     private $uf;
     private $criadoDia;
     private $idade;
+    private $curriculo;
     private $foto;
     private $empresa;
     private $admin;
@@ -38,10 +40,11 @@ class Usuario extends Modelo
         $sobrenome = null,
         $cidade = null,
         $uf = null,
-        $foto = null,
         $telefone = null,
         $sobre = null,
         $idade = null,
+        $curriculo = null,
+        $foto = null,
         $empresa = null,
         $admin = false
 
@@ -57,6 +60,7 @@ class Usuario extends Modelo
         $this->uf = $uf;
         $this->criadoDia = date("Y/m/d");
         $this->idade = $idade;
+        $this->curriculo = $curriculo;
         $this->foto = $foto;
         $this->empresa = $empresa;
         $this->senhaPlana = $senhaPlana;
@@ -107,6 +111,7 @@ class Usuario extends Modelo
     {
         return $this->empresa;
     }
+
     public function getImagem()
     {
         $imagemNome = "{$this->id}.png";
@@ -114,6 +119,15 @@ class Usuario extends Modelo
             $imagemNome = 'padrao.png';
         }
         return $imagemNome;
+    }
+
+    public function getCurriculo()
+    {
+        $curriculoNome = "{$this->id}.png";
+        if (!DW3ImagemUpload::existe($curriculoNome)) {
+            $curriculoNome = 'padrao.png';
+        }
+        return $curriculoNome;
     }
 
     public function isProgramador()
@@ -163,9 +177,10 @@ class Usuario extends Modelo
         $comando->bindValue(9, $this->uf, PDO::PARAM_STR);
         $comando->bindValue(10, $this->criadoDia, PDO::PARAM_STR);
         $comando->bindValue(11, $this->idade, PDO::PARAM_STR);
-        $comando->bindValue(12, $this->foto, PDO::PARAM_STR);
-        $comando->bindValue(13, $this->empresa, PDO::PARAM_STR);
-        $comando->bindValue(14, $this->admin, PDO::PARAM_STR);
+        $comando->bindValue(12, $this->curriculo, PDO::PARAM_STR);
+        $comando->bindValue(13, $this->foto, PDO::PARAM_STR);
+        $comando->bindValue(14, $this->empresa, PDO::PARAM_STR);
+        $comando->bindValue(15, $this->admin, PDO::PARAM_STR);
 
 
         $comando->execute();
@@ -194,12 +209,10 @@ class Usuario extends Modelo
                 '',
                 null,
                 $registro['id'],
-                $registro['tipo'],
                 $registro['nome'],
             );
             $objeto->senha = $registro['senha'];
-            $objeto->tipo = $registro['tipo'];
-            $objeto->tipo = $registro['nome'];
+            $objeto->nome = $registro['nome'];
 
         }
         return $objeto;
@@ -217,7 +230,21 @@ class Usuario extends Modelo
                 '',
                 null,
                 $registro['id'],
-                $registro['tipo'],
+                $registro['nome'],
+        );
+    }
+
+    public static function buscarChefe()
+    {
+        $comando = DW3BancoDeDados::prepare(self::BUSCAR_CHEFE);
+        $comando->execute();
+        $registro = $comando->fetch();
+        return new Usuario(
+            $registro['email'],
+                '',
+                false,
+                $registro['id'],
+                $registro['nome'],
         );
     }
 }

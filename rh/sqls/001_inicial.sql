@@ -13,8 +13,9 @@ CREATE TABLE usuarios (
     uf CHAR(60) NULL ,
     criado_dia DATE NULL ,
     idade INT NULL ,
+    curriculo CHAR(60) NULL ,
     foto CHAR(60) NULL ,
-    empresa INT NULL,
+    empresa CHAR(60) NULL,
     admin BOOLEAN NOT NULL DEFAULT 0,
 
     PRIMARY KEY (id)
@@ -23,7 +24,6 @@ ENGINE = InnoDB;
 
 CREATE TABLE vagas (
     id INT NOT NULL AUTO_INCREMENT ,
-    usuario_id INT NOT NULL ,
     cargo CHAR(60) NOT NULL ,
     framework CHAR(60) NOT NULL ,
     salario DECIMAL NOT NULL ,
@@ -33,17 +33,12 @@ CREATE TABLE vagas (
     resposta BOOLEAN NULL ,
     status_proposta BOOLEAN NULL ,
 
-
     PRIMARY KEY (id),
-    FOREIGN KEY (usuario_id) REFERENCES usuarios (id),
     FOREIGN KEY (programador) REFERENCES usuarios (id)
 )
 ENGINE = InnoDB;
 
 
-INSERT INTO usuarios (email, senha, programador, '99999-9999', admin, null, '') 
-VALUES ('rh@admin.com', 
-		'$2y$10$/6aH1pW4RKYRFcvKC83JJ.AMSerCItzea57qRHTTLACwRZpkGfs4q', 
-        false,
-
-		true);
+INSERT INTO usuarios (email, senha, programador, telefone, sobre, nome, sobrenome, cidade, uf, criado_dia, idade, curriculo, foto, empresa, admin) 
+VALUES ('rh@admin.com', '$2y$10$/6aH1pW4RKYRFcvKC83JJ.AMSerCItzea57qRHTTLACwRZpkGfs4q', false, '99999-9999', 'Gerente de RH em busca de novos programadores qualificados para trabalhar na nossa empresa', 'Alice', 'Martins Goncalves', 'Sao Paulo', 'SP', '2023-01-01', 38, null, null, 'CodeWave', true),
+('boss@admin.com', '$2y$10$/6aH1pW4RKYRFcvKC83JJ.AMSerCItzea57qRHTTLACwRZpkGfs4q', false, '99999-8888', 'Dono de uma empresa de tecnologia que busca codificar a solucao dos seus problemas', 'Lucas', 'Almeida Sousa', 'Porto Alegre', 'SC', '2023-01-01', 38, null, null, 'CodeWave', false);
