@@ -2,6 +2,7 @@
 namespace Controlador;
 
 use \Framework\DW3Sessao;
+use Modelo\Usuario;
 use \Modelo\Vaga;
 
 class VagaControlador extends Controlador
@@ -16,15 +17,19 @@ class VagaControlador extends Controlador
         return compact('pagina', 'vagas', 'ultimaPagina');
     }
 
+    public function criar()
+    {
+        $this->visao('vaga/criar.php');
+    }
+
     public function index()
     {
         $this->verificarLogado();
         $paginacao = $this->calcularPaginacao();
-        echo DW3Sessao::get('usuario');
         $this->visao('home/index.php', [
             'vagas' => $paginacao['vagas'],
             'pagina' => $paginacao['pagina'],
-            'usuario' => DW3Sessao::get('usuario'),
+            'usuario' =>Usuario::buscarId(DW3Sessao::get('usuario')),
             'ultimaPagina' => $paginacao['ultimaPagina'],
             'MensagemFlash' => DW3Sessao::getFlash('HomeFlash')
         ]);
@@ -60,7 +65,7 @@ class VagaControlador extends Controlador
     {
         $this->verificarLogado();
         $vaga = Vaga::buscarId($id);
-        if ($vaga->getQuemConvidou() == $this->getUsuario()) {
+        if ($vaga->getUsuario() == $this->getUsuario()) {
             Vaga::destruir($id);
             DW3Sessao::setFlash('mensagemFlash', 'Mensagem destruida.');
         } else {

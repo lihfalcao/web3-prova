@@ -12,7 +12,8 @@ document.querySelector('#btnSignin')
     btnColor.style.left = "0px"
     btnSignin.style.color = "white"
     btnSignup.style.color = "black"
-    document.querySelector('.container').style.height = "450px"
+    btnSignup.style.outline = "none"
+    document.querySelector('.container').style.height = "400px"
 
     
 })
@@ -24,5 +25,6 @@ document.querySelector('#btnSignup')
     btnColor.style.left = "121px"
     btnSignup.style.color = "white"
     btnSignin.style.color = "black"
-    document.querySelector('.container').style.height = "570px"
+    btnSignin.style.outline = "none"
+    document.querySelector('.container').style.height = "1000px"
 })

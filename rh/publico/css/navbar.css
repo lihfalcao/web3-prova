@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
 .wrapper {
   max-width: 1140px;
@@ -138,6 +139,7 @@ body {
     padding-bottom: 1.5rem; }
     @media (max-width: 939px) {
       .nav__item a {
+        color:white;
         padding: 1rem; } }
   .nav__item.active a {
     border-left-color: #222; }
@@ -163,9 +165,15 @@ body {
     color: white;
 }
 
-#home:hover {
+#home, #vaga{
+  color: black;
+}
+
+#home:hover, #vaga:hover {
     color: white;
 }
+
+
 
 
 #logout {

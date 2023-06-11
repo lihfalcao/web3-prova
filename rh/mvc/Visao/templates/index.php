@@ -12,7 +12,6 @@
 
     <script src="<?= URL_JS . 'jquery-3.1.1.min.js' ?>"></script>
     <script src="<?= URL_JS . 'bootstrap.min.js' ?>"></script>
-    <script src="<?= URL_JS . 'navbar.js' ?>"></script>
 
     <script src="<?= URL_JS . 'cf6fa412bd.js'?>" crossorigin="anonymous"></script>
 

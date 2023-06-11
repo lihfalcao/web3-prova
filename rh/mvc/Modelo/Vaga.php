@@ -6,7 +6,7 @@ use \Framework\DW3BancoDeDados;
 
 class Vaga extends Modelo
 {
-    const BUSCAR_TODOS = 'SELECT v.*, programador.email as programador_email, programador.tipo as programador_tipo, programador.nome as programador_nome, programador.sobrenome as programador_sobrenome,programador.criado_dia as programador_criado_dia, programador.foto as programador_foto, programador.cidade as programador_cidade, programador.uf as programador_uf FROM vagas v LEFT JOIN usuarios programador ON (v.programador = programador.id) ORDER BY v.id LIMIT ? OFFSET ?';
+    const BUSCAR_TODOS = 'SELECT v.*, programador.email as programador_email, programador.nome as programador_nome, programador.sobrenome as programador_sobrenome,programador.criado_dia as programador_criado_dia, programador.genero as programador_genero, programador.cidade as programador_cidade, programador.uf as programador_uf FROM vagas v LEFT JOIN usuarios programador ON (v.programador = programador.id) ORDER BY programador.nome LIMIT ? OFFSET ?';
     const BUSCAR_ID = 'SELECT * FROM vagas WHERE id = ? LIMIT 1';
     const INSERIR = 'INSERT INTO vagas(usuario_id,texto) VALUES (?, ?)';
     const DELETAR = 'DELETE FROM vagas WHERE id = ?';
@@ -118,12 +118,19 @@ class Vaga extends Modelo
             $programador = new Usuario(
                 $registro['programador_email'],
                 '',
-                $registro['programador_tipo'],
-                $registro['programador'],
                 $registro['programador_nome'],
                 $registro['programador_sobrenome'],
+                $registro['programador_genero'],
                 $registro['programador_cidade'],
                 $registro['programador_uf'],
+                $registro['programador_telefone'],
+                $registro['programador_sobre'],
+                $registro['programador_idade'],
+                null,
+                null,
+                $registro['programador_empresa'],
+                $registro['programador_admin'],
+                $registro['programador_id'],
             );
             $objetos[] = new Vaga(
                 $registro['id'],

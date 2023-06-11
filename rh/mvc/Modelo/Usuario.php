@@ -10,7 +10,7 @@ class Usuario extends Modelo
     const BUSCAR_ID = 'SELECT * FROM usuarios WHERE id = ?';
     const BUSCAR_POR_EMAIL = 'SELECT * FROM usuarios WHERE email = ? LIMIT 1';
     const BUSCAR_CHEFE = 'SELECT * FROM usuarios WHERE programador = false AND admin = false LIMIT 1';
-    const INSERIR = 'INSERT INTO usuarios(email, senha, programador, telefone, sobre, nome, sobrenome, cidade, uf, criado_dia, idade, curriculo, foto, empresa, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const INSERIR = 'INSERT INTO usuarios(email, senha, programador, telefone, sobre, nome, sobrenome, genero, cidade, uf, criado_dia, idade, empresa, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
     private $id;
     private $email;
     private $senha;
@@ -20,6 +20,7 @@ class Usuario extends Modelo
     private $sobre;
     private $nome;
     private $sobrenome;
+    private $genero;
     private $cidade;
     private $uf;
     private $criadoDia;
@@ -34,26 +35,27 @@ class Usuario extends Modelo
     public function __construct(
         $email,
         $senhaPlana,
-        $programador = true,
-        $id = null,
-        $nome = null,
-        $sobrenome = null,
-        $cidade = null,
-        $uf = null,
-        $telefone = null,
-        $sobre = null,
-        $idade = null,
+        $nome,
+        $sobrenome,
+        $genero,
+        $cidade,
+        $uf,
+        $telefone,
+        $sobre,
+        $idade,
         $curriculo = null,
         $foto = null,
         $empresa = null,
-        $admin = false
+        $admin = false,
+        $id = null
 
     ) {
         $this->email = $email;
         $this->id = $id;
-        $this->programador = $programador;
+        $this->programador = true;
         $this->nome = $nome;
         $this->sobrenome = $sobrenome;
+        $this->genero = $genero;
         $this->telefone = $telefone;
         $this->sobre = $sobre;
         $this->cidade = $cidade;
@@ -94,7 +96,13 @@ class Usuario extends Modelo
 
     public function getSobrenome()
     {
-        return $this->nome;
+        return $this->sobrenome;
+    }
+
+
+    public function getGenero()
+    {
+        return $this->genero;
     }
 
     public function getCidade()
@@ -114,7 +122,7 @@ class Usuario extends Modelo
 
     public function getImagem()
     {
-        $imagemNome = "{$this->id}.png";
+        $imagemNome = "{$this->id}{$this->nome}.png";
         if (!DW3ImagemUpload::existe($imagemNome)) {
             $imagemNome = 'padrao.png';
         }
@@ -123,9 +131,9 @@ class Usuario extends Modelo
 
     public function getCurriculo()
     {
-        $curriculoNome = "{$this->id}.png";
+        $curriculoNome = "{$this->id}{$this->nome}.pdf";
         if (!DW3ImagemUpload::existe($curriculoNome)) {
-            $curriculoNome = 'padrao.png';
+            $curriculoNome = 'padrao.pdf';
         }
         return $curriculoNome;
     }
@@ -155,11 +163,22 @@ class Usuario extends Modelo
             $this->setErroMensagem('senha', 'Deve ter no mínimo 3 caracteres.');
         }
 
+        if (DW3ImagemUpload::existeUpload($this->foto)
+        && !DW3ImagemUpload::isValida($this->foto)) {
+        $this->setErroMensagem('foto', 'Deve ser de no máximo 500 KB.');
+        }
+
+        if (DW3ImagemUpload::existeUpload($this->curriculo)
+        && !DW3ImagemUpload::isValida($this->curriculo)) {
+        $this->setErroMensagem('curriculo', 'Deve ser de no máximo 500 KB.');
+        }
+
     }
 
     public function salvar()
     {
         $this->inserir();
+        $this->salvarImagem();
     }
 
     private function inserir()
@@ -173,16 +192,13 @@ class Usuario extends Modelo
         $comando->bindValue(5, $this->sobre, PDO::PARAM_STR);
         $comando->bindValue(6, $this->nome, PDO::PARAM_STR);
         $comando->bindValue(7, $this->sobrenome, PDO::PARAM_STR);
-        $comando->bindValue(8, $this->cidade, PDO::PARAM_STR);
-        $comando->bindValue(9, $this->uf, PDO::PARAM_STR);
-        $comando->bindValue(10, $this->criadoDia, PDO::PARAM_STR);
-        $comando->bindValue(11, $this->idade, PDO::PARAM_STR);
-        $comando->bindValue(12, $this->curriculo, PDO::PARAM_STR);
-        $comando->bindValue(13, $this->foto, PDO::PARAM_STR);
-        $comando->bindValue(14, $this->empresa, PDO::PARAM_STR);
-        $comando->bindValue(15, $this->admin, PDO::PARAM_STR);
-
-
+        $comando->bindValue(8, $this->genero, PDO::PARAM_STR);
+        $comando->bindValue(9, $this->cidade, PDO::PARAM_STR);
+        $comando->bindValue(10, $this->uf, PDO::PARAM_STR);
+        $comando->bindValue(11, $this->criadoDia, PDO::PARAM_STR);
+        $comando->bindValue(12, $this->idade, PDO::PARAM_INT);
+        $comando->bindValue(13, $this->empresa, PDO::PARAM_STR);
+        $comando->bindValue(14, $this->admin, PDO::PARAM_BOOL);
         $comando->execute();
         $this->id = DW3BancoDeDados::getPdo()->lastInsertId();
         DW3BancoDeDados::getPdo()->commit();
@@ -191,8 +207,13 @@ class Usuario extends Modelo
     private function salvarImagem()
     {
         if (DW3ImagemUpload::isValida($this->foto)) {
-            $nomeCompleto = PASTA_PUBLICO . "img/{$this->id}.png";
+            $nomeCompleto = PASTA_PUBLICO . "img/foto/{$this->id}{$this->nome}.png";
             DW3ImagemUpload::salvar($this->foto, $nomeCompleto);
+        }
+
+        if (DW3ImagemUpload::isValida($this->curriculo)) {
+            $nomeCompleto = PASTA_PUBLICO . "img/curriculo/{$this->id}{$this->nome}.pdf";
+            DW3ImagemUpload::salvar($this->curriculo, $nomeCompleto);
         }
     }
 
@@ -207,9 +228,19 @@ class Usuario extends Modelo
             $objeto = new Usuario(
                 $registro['email'],
                 '',
-                null,
-                $registro['id'],
                 $registro['nome'],
+                $registro['sobrenome'],
+                $registro['genero'],
+                $registro['cidade'],
+                $registro['uf'],
+                $registro['telefone'],
+                $registro['sobre'],
+                $registro['idade'],
+                null,
+                null,
+                $registro['empresa'],
+                $registro['admin'],
+                $registro['id'],
             );
             $objeto->senha = $registro['senha'];
             $objeto->nome = $registro['nome'];
@@ -222,17 +253,35 @@ class Usuario extends Modelo
     public static function buscarId($id)
     {
         $comando = DW3BancoDeDados::prepare(self::BUSCAR_ID);
-        $comando->bindValue(1, $id, PDO::PARAM_INT);
+        $comando->bindValue(1, $id, PDO::PARAM_STR);
         $comando->execute();
+        $objeto = null;
         $registro = $comando->fetch();
-        return new Usuario(
-            $registro['email'],
+        if ($registro) {
+            $objeto = new Usuario(
+                $registro['email'],
                 '',
-                null,
-                $registro['id'],
                 $registro['nome'],
-        );
+                $registro['sobrenome'],
+                $registro['genero'],
+                $registro['cidade'],
+                $registro['uf'],
+                $registro['telefone'],
+                $registro['sobre'],
+                $registro['idade'],
+                null,
+                null,
+                $registro['empresa'],
+                $registro['admin'],
+                $registro['id']
+            );
+            $objeto->senha = $registro['senha'];
+            $objeto->nome = $registro['nome'];
+
+        }
+        return $objeto;
     }
+
 
     public static function buscarChefe()
     {
@@ -242,9 +291,19 @@ class Usuario extends Modelo
         return new Usuario(
             $registro['email'],
                 '',
-                false,
-                $registro['id'],
                 $registro['nome'],
+                $registro['sobrenome'],
+                $registro['genero'],
+                $registro['cidade'],
+                $registro['uf'],
+                $registro['telefone'],
+                $registro['sobre'],
+                $registro['idade'],
+                null,
+                null,
+                $registro['empresa'],
+                $registro['admin'],
+                $registro['id']
         );
     }
 }

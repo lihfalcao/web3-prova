@@ -9,12 +9,11 @@ CREATE TABLE usuarios (
     sobre VARCHAR(255) NULL ,
     nome CHAR(60) NULL ,
     sobrenome CHAR(60) NULL ,
+    genero CHAR(60) NULL ,
     cidade CHAR(60) NULL ,
     uf CHAR(60) NULL ,
     criado_dia DATE NULL ,
     idade INT NULL ,
-    curriculo CHAR(60) NULL ,
-    foto CHAR(60) NULL ,
     empresa CHAR(60) NULL,
     admin BOOLEAN NOT NULL DEFAULT 0,
 
@@ -39,6 +38,6 @@ CREATE TABLE vagas (
 ENGINE = InnoDB;
 
 
-INSERT INTO usuarios (email, senha, programador, telefone, sobre, nome, sobrenome, cidade, uf, criado_dia, idade, curriculo, foto, empresa, admin) 
-VALUES ('rh@admin.com', '$2y$10$/6aH1pW4RKYRFcvKC83JJ.AMSerCItzea57qRHTTLACwRZpkGfs4q', false, '99999-9999', 'Gerente de RH em busca de novos programadores qualificados para trabalhar na nossa empresa', 'Alice', 'Martins Goncalves', 'Sao Paulo', 'SP', '2023-01-01', 38, null, null, 'CodeWave', true),
-('boss@admin.com', '$2y$10$/6aH1pW4RKYRFcvKC83JJ.AMSerCItzea57qRHTTLACwRZpkGfs4q', false, '99999-8888', 'Dono de uma empresa de tecnologia que busca codificar a solucao dos seus problemas', 'Lucas', 'Almeida Sousa', 'Porto Alegre', 'SC', '2023-01-01', 38, null, null, 'CodeWave', false);
+INSERT INTO usuarios (email, senha, programador, telefone, sobre, nome, sobrenome, genero, cidade, uf, criado_dia, idade, empresa, admin) 
+VALUES ('rh@admin.com', '$2y$10$/6aH1pW4RKYRFcvKC83JJ.AMSerCItzea57qRHTTLACwRZpkGfs4q', false, '99999-9999', 'Gerente de RH em busca de novos programadores qualificados para trabalhar na nossa empresa', 'Alice', 'Martins Goncalves', 'F', 'Sao Paulo', 'SP', '2023-01-01', 38, 'CodeWave', true),
+('boss@admin.com', '$2y$10$/6aH1pW4RKYRFcvKC83JJ.AMSerCItzea57qRHTTLACwRZpkGfs4q', false, '99999-8888', 'Dono de uma empresa de tecnologia que busca codificar a solucao dos seus problemas', 'Lucas', 'Almeida Sousa','M', 'Porto Alegre', 'SC', '2023-01-01', 38, 'CodeWave', false);

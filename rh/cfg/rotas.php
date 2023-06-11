@@ -22,11 +22,7 @@ $rotas = [
         'GET' => '\Controlador\VagaControlador#index',
         'POST' => '\Controlador\VagaControlador#armazenar',
     ],
-    '/mensagens' => [
-        'GET' => '\Controlador\MensagemControlador#index',
-        'POST' => '\Controlador\MensagemControlador#armazenar',
-    ],
-    '/mensagens/?' => [
-        'DELETE' => '\Controlador\MensagemControlador#destruir',
+    '/vaga/criar' => [
+        'GET' => '\Controlador\VagaControlador#criar',
     ],
 ];

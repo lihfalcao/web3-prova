@@ -9,23 +9,21 @@
                 <h1 class="brand">RH+++</h1>
               </div>
               <div class="site-header__end top">
-                <p>Bem-vindo <?= $usuario ?></p>
+                <p style="color:gray; font-weight: bold; margin: auto"><?= $usuario->getGenero() == 'M' ? 'Bem-vindo ' : 'Bem-vinda ' . $usuario->getNome() ?></p>
                 <button id="logout">Logout</button>
               </div>
             </div>
           </div>
           <div class="site-header__bottom">
             <div class="wrapper site-header__wrapper">
-              <div class="site-header__start">
-                <nav class="nav">
-                  <ul class="nav__wrapper">
-                    <li class="nav__item"><a href="#" id="home">Home</a></li>
-                    <li class="nav__item"><a href="/rh/home.html" id="rh">RH</a></li>
-                    <li class="nav__item"><a href="/programmer/home.html" id="programmer">Programador</a></li>
-                  </ul>
-                </nav>
-              </div>
-    
+				<div class="site-header__start">
+							<nav class="nav">
+							<ul class="nav__wrapper">
+								<li class="nav__item"><a href="#" id="home">Home</a></li>
+								<li class="nav__item"><a href="<?= URL_RAIZ . 'vaga/criar' ?>" id="vaga">Cadastrar Vaga</a></li>
+							</ul>
+							</nav>
+				</div>
               <div class="site-header__end bottom">
                
                 <button id="profile" title="Meu Perfil" style="outline:none"><i class="fa fa-user" aria-hidden="true"></i></button> 
@@ -41,11 +39,12 @@
 				<div class="col-md-12">
 					<div class="table-wrap">
 						<table class="table table-responsive-xl">
-						  <thead>
+						<thead>
 						    <tr>
-						    	<th>&nbsp;</th>
-						    	<th>Email</th>
+						      <th>&nbsp;</th>
+						      <th>Email</th>
 						      <th>Nome</th>
+						      <th>Status</th>
 						      <th>&nbsp;</th>
 						    </tr>
 						  </thead>
@@ -57,7 +56,7 @@
 							<?php if($vaga->getStatusProposta() === 1) : ?>
 
 						      <td class="d-flex align-items-center">
-						      	<div class="img" style="background-image: url(../assets/images/person_1.png);"></div>
+							  	<img src="<?= URL_IMG . $mensagem->getUsuario()->getImagem() ?>" alt="Imagem do perfil" class="imagem-usuario pull-left">
 						      	<div class="pl-3 email">
 						      		<span><?= $vaga->getProgramador()->getEmail() ?></span>
 									<?php $date=date_create($vaga->getProgramador()->getCriadoDia());?>
@@ -71,6 +70,25 @@
 							  <?php endif?>
 							  <?php endforeach ?>
 							<td></td>
+						    </tr>
+							<tr class="alert" role="alert">
+						    	<td>
+						    	</td>
+						      <td class="d-flex align-items-center">
+						      	<div class="img" style="background-image: url(../assets/images/person_1.png);"></div>
+						      	<div class="pl-3 email">
+						      		<span>markotto@email.com</span>
+						      		<span>Membro desde: 01/03/2020</span>
+						      	</div>
+						      </td>
+						      <td>
+								<p style="font-weight: bold;">Mark Otto</p>
+						      	<p style="margin-top: 0.5em; text-transform: uppercase; font-size: smaller; color: gray;">Curitiba - PR</p>
+							  </td>
+						      <td class="status"><span class="active">Disponível</span></td>
+						      <td>
+								<button class="invite" style="outline:none">Convidar</button>
+				        	</td>
 						    </tr>
 						    <tr class="alert" role="alert">
 						    	<td>
@@ -86,9 +104,8 @@
 								<p style="font-weight: bold;">Alina Souza</p>
 						      	<p style="margin-top: 0.5em; text-transform: uppercase; font-size: smaller; color: gray;">Guarapuava - PR</p>
 							  </td>
+						      <td class="status"><span class="waiting">Convidado</span></td>
 						      <td></td>
-							<td></td>
-
 						    </tr>
 						    <tr class="alert" role="alert">
 						    	<td>
@@ -104,9 +121,10 @@
 								<p style="font-weight: bold;">Larry Johnson</p>
 						      	<p style="margin-top: 0.5em; text-transform: uppercase; font-size: smaller; color: gray;">São Paulo - SP</p>
 							  </td>
+						      <td class="status"><span class="accept">Contratado</span></td>
 						      <td>
+						      	
 				        	</td>
-							<td></td>
 						    </tr>
 						    <tr class="alert" role="alert">
 						    	<td>
@@ -122,7 +140,10 @@
 								<p style="font-weight: bold;">John Doe</p>
 						      	<p style="margin-top: 0.5em; text-transform: uppercase; font-size: smaller; color: gray;">Guarapuava - PR</p>
 							  </td>
-							<td></td>
+						      <td class="status"><span class="active">Disponível</span></td>
+						      <td>
+								<button class="invite" style="outline:none">Convidar</button>
+				        	</td>
 						    </tr>
 						    <tr class="alert" role="alert">
 						    	<td class="border-bottom-0">
@@ -138,9 +159,9 @@
 								<p style="font-weight: bold;">Gary Copper</p>
 						      	<p style="margin-top: 0.5em; text-transform: uppercase; font-size: smaller; color: gray;">Cascavel - PR</p>
 							  </td>
+						      <td class="status border-bottom-0"><span class="waiting">Convidado</span></td>
 						      <td class="border-bottom-0">
 				        	</td>
-							<td></td>
 						    </tr>
 						  </tbody>
 						</table>
@@ -152,5 +173,3 @@
 		<script src="<?= URL_JS . 'bootstrap.min.js'?>"></script>
 		<script src="<?= URL_JS . 'jquery.min.js'?>"></script>
 		<script src="<?= URL_JS . 'popper.js'?>"></script>
-		<script src="<?= URL_JS . 'main.js'?>"></script>
-		<script src="<?= URL_JS . 'home.js'?>"></script>
