@@ -25,4 +25,7 @@ $rotas = [
     '/vaga/criar' => [
         'GET' => '\Controlador\VagaControlador#criar',
     ],
+    '/vaga/convidar/?' => [
+        'GET' => '\Controlador\VagaControlador#convidar',
+    ],
 ];

@@ -22,6 +22,11 @@ class VagaControlador extends Controlador
         $this->visao('vaga/criar.php');
     }
 
+    public function convidar()
+    {
+        $this->visao('vaga/convidar.php');
+    }
+
     public function index()
     {
         $this->verificarLogado();
