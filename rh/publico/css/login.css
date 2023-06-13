@@ -12,6 +12,10 @@
   box-shadow: 0 0 20px 0 darkgrey;
 }
 
+body {
+  display: flex;
+}
+
 form {
   position: absolute;
   margin-top: 80px;
@@ -44,9 +48,9 @@ form {
   transition: .3s;
 }
 
-input[type="text"], input[type="password"]{
+input[type="text"], input[type="password"], input[type="number"], textarea{
   border: none;
-  margin-top: 40px;
+  margin-top: 30px;
   border-radius: 60px;
   padding: 8px 0 8px 35px;
   outline: none;
@@ -77,7 +81,7 @@ button[type="submit"] {
   font-weight: bold;
   box-shadow: 0px 10px 14px -7px #276873;
   text-shadow: 0px 1px 0px #3d768a;
-  outline: none;
+  outline: none !important;
 }
 
 button[type="submit"]:hover{

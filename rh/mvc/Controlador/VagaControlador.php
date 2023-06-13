@@ -2,6 +2,7 @@
 namespace Controlador;
 
 use \Framework\DW3Sessao;
+use Modelo\Usuario;
 use \Modelo\Vaga;
 
 class VagaControlador extends Controlador
@@ -11,9 +12,19 @@ class VagaControlador extends Controlador
         $pagina = array_key_exists('p', $_GET) ? intval($_GET['p']) : 1;
         $limit = 4;
         $offset = ($pagina - 1) * $limit;
-        $mensagens = Vaga::buscarTodos($limit, $offset);
+        $vagas = Vaga::buscarTodos($limit, $offset);
         $ultimaPagina = ceil(Vaga::contarTodos() / $limit);
-        return compact('pagina', 'mensagens', 'ultimaPagina');
+        return compact('pagina', 'vagas', 'ultimaPagina');
+    }
+
+    public function criar()
+    {
+        $this->visao('vaga/criar.php');
+    }
+
+    public function convidar()
+    {
+        $this->visao('vaga/convidar.php');
     }
 
     public function index()
@@ -21,8 +32,9 @@ class VagaControlador extends Controlador
         $this->verificarLogado();
         $paginacao = $this->calcularPaginacao();
         $this->visao('home/index.php', [
-            'mensagens' => $paginacao['mensagens'],
+            'vagas' => $paginacao['vagas'],
             'pagina' => $paginacao['pagina'],
+            'usuario' =>Usuario::buscarId(DW3Sessao::get('usuario')),
             'ultimaPagina' => $paginacao['ultimaPagina'],
             'MensagemFlash' => DW3Sessao::getFlash('HomeFlash')
         ]);
@@ -33,7 +45,9 @@ class VagaControlador extends Controlador
         $this->verificarLogado();
         $vaga = new Vaga(
             DW3Sessao::get('usuario'),
-            $_POST['texto']
+            $_POST['texto'],
+            '',
+            ''
         );
         if ($vaga->isValido()) {
             $vaga->salvar();
@@ -56,7 +70,7 @@ class VagaControlador extends Controlador
     {
         $this->verificarLogado();
         $vaga = Vaga::buscarId($id);
-        if ($vaga->getUsuarioId() == $this->getUsuario()) {
+        if ($vaga->getUsuario() == $this->getUsuario()) {
             Vaga::destruir($id);
             DW3Sessao::setFlash('mensagemFlash', 'Mensagem destruida.');
         } else {

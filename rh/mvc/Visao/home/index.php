@@ -1,20 +1,77 @@
+<link rel="stylesheet" href="<?= URL_CSS . 'home.css' ?>">
+<link rel="stylesheet" href="<?= URL_CSS . 'bootstrap.min.css' ?>">
+
+
+<header class="site-header">
+          <div class="site-header__top">
+            <div class="wrapper site-header__wrapper">
+              <div class="site-header__middle">
+                <h1 class="brand">RH+++</h1>
+              </div>
+              <div class="site-header__end top">
+                <p style="color:gray; font-weight: bold; margin: auto"><?= $usuario->getGenero() == 'M' ? 'Bem-vindo ' : 'Bem-vinda ' . $usuario->getNome() ?></p>
+                <button id="logout">Logout</button>
+              </div>
+            </div>
+          </div>
+          <div class="site-header__bottom">
+            <div class="wrapper site-header__wrapper">
+				<div class="site-header__start">
+							<nav class="nav">
+							<ul class="nav__wrapper">
+								<li class="nav__item"><a href="#" id="home">Home</a></li>
+								<li class="nav__item"><a href="<?= URL_RAIZ . 'vaga/criar' ?>" id="vaga">Cadastrar Vaga</a></li>
+							</ul>
+							</nav>
+				</div>
+              <div class="site-header__end bottom">
+               
+                <button id="profile" title="Meu Perfil" style="outline:none"><i class="fa fa-user" aria-hidden="true"></i></button> 
+    
+                </a>
+              </div>
+            </div>
+          </div>
+        </header>
+
 <div class="container">
 			<div class="row">
 				<div class="col-md-12">
 					<div class="table-wrap">
 						<table class="table table-responsive-xl">
-						  <thead>
+						<thead>
 						    <tr>
-						    	<th>&nbsp;</th>
-						    	<th>Email</th>
+						      <th>&nbsp;</th>
+						      <th>Email</th>
 						      <th>Nome</th>
 						      <th>Status</th>
-						      <th>Ação</th>
 						      <th>&nbsp;</th>
 						    </tr>
 						  </thead>
 						  <tbody>
 						    <tr class="alert" role="alert">
+						    	<td>
+						    	</td>
+							<?php foreach ($vagas as $vaga) : ?>
+							<?php if($vaga->getStatusProposta() === 1) : ?>
+
+						      <td class="d-flex align-items-center">
+							  	<img src="<?= URL_IMG . $mensagem->getUsuario()->getImagem() ?>" alt="Imagem do perfil" class="imagem-usuario pull-left">
+						      	<div class="pl-3 email">
+						      		<span><?= $vaga->getProgramador()->getEmail() ?></span>
+									<?php $date=date_create($vaga->getProgramador()->getCriadoDia());?>
+						      		<span>Membro desde: <?= date_format($date,"d/m/Y"); ?></span>
+						      	</div>
+						      </td>
+						      <td>
+								<p style="font-weight: bold;"><?= $vaga->getProgramador()->getNome() ?> <?= $vaga->getProgramador()->getSobrenome() ?></p>
+						      	<p style="margin-top: 0.5em; text-transform: uppercase; font-size: smaller; color: gray;"><?= $vaga->getProgramador()->getCidade() ?> - <?= $vaga->getProgramador()->getUf() ?></p>
+							  </td>
+							  <?php endif?>
+							  <?php endforeach ?>
+							<td></td>
+						    </tr>
+							<tr class="alert" role="alert">
 						    	<td>
 						    	</td>
 						      <td class="d-flex align-items-center">
@@ -28,12 +85,10 @@
 								<p style="font-weight: bold;">Mark Otto</p>
 						      	<p style="margin-top: 0.5em; text-transform: uppercase; font-size: smaller; color: gray;">Curitiba - PR</p>
 							  </td>
-						      <td class="status"><span class="accept">Convite Aceito</span></td>
+						      <td class="status"><span class="active">Disponível</span></td>
 						      <td>
-								<button class="accepted" value="rh" title="Contratar" style="outline:none"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button> 
-								<button class="denied" value="rh" title="Recusar" style="outline:none"><i class="fa fa-thumbs-down fa-flip-horizontal" aria-hidden="true"></i></button>
+								<button class="invite" style="outline:none">Convidar</button>
 				        	</td>
-							<td></td>
 						    </tr>
 						    <tr class="alert" role="alert">
 						    	<td>
@@ -49,10 +104,8 @@
 								<p style="font-weight: bold;">Alina Souza</p>
 						      	<p style="margin-top: 0.5em; text-transform: uppercase; font-size: smaller; color: gray;">Guarapuava - PR</p>
 							  </td>
-						      <td class="status"><span class="waiting">Aguardando Resposta</span></td>
+						      <td class="status"><span class="waiting">Convidado</span></td>
 						      <td></td>
-							<td></td>
-
 						    </tr>
 						    <tr class="alert" role="alert">
 						    	<td>
@@ -68,10 +121,10 @@
 								<p style="font-weight: bold;">Larry Johnson</p>
 						      	<p style="margin-top: 0.5em; text-transform: uppercase; font-size: smaller; color: gray;">São Paulo - SP</p>
 							  </td>
-						      <td class="status"><span class="denied">Convite recusado</span></td>
+						      <td class="status"><span class="accept">Contratado</span></td>
 						      <td>
+						      	
 				        	</td>
-							<td></td>
 						    </tr>
 						    <tr class="alert" role="alert">
 						    	<td>
@@ -87,12 +140,10 @@
 								<p style="font-weight: bold;">John Doe</p>
 						      	<p style="margin-top: 0.5em; text-transform: uppercase; font-size: smaller; color: gray;">Guarapuava - PR</p>
 							  </td>
-						      <td class="status"><span class="accept">Convite Aceito</span></td>
+						      <td class="status"><span class="active">Disponível</span></td>
 						      <td>
-								<button class="accepted" value="rh" title="Contratar" style="outline:none"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button> 
-								<button class="denied" value="rh" title="Recusar" style="outline:none"><i class="fa fa-thumbs-down fa-flip-horizontal" aria-hidden="true"></i></button>
+								<button class="invite" style="outline:none">Convidar</button>
 				        	</td>
-							<td></td>
 						    </tr>
 						    <tr class="alert" role="alert">
 						    	<td class="border-bottom-0">
@@ -108,10 +159,9 @@
 								<p style="font-weight: bold;">Gary Copper</p>
 						      	<p style="margin-top: 0.5em; text-transform: uppercase; font-size: smaller; color: gray;">Cascavel - PR</p>
 							  </td>
-						      <td class="status border-bottom-0"><span class="waiting">Aguardando Resposta</span></td>
+						      <td class="status border-bottom-0"><span class="waiting">Convidado</span></td>
 						      <td class="border-bottom-0">
 				        	</td>
-							<td></td>
 						    </tr>
 						  </tbody>
 						</table>
@@ -119,3 +169,7 @@
 				</div>
 			</div>
 		</div>
+
+		<script src="<?= URL_JS . 'bootstrap.min.js'?>"></script>
+		<script src="<?= URL_JS . 'jquery.min.js'?>"></script>
+		<script src="<?= URL_JS . 'popper.js'?>"></script>

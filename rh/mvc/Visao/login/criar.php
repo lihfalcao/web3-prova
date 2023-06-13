@@ -20,30 +20,59 @@
       </div>
       <button type="submit">Entrar</button>
     </form>
-
     <form action="<?= URL_RAIZ . 'usuarios' ?>" method="post" enctype="multipart/form-data" id="signup">
-    <div class="form-group <?= $this->getErroCss('email') ?>">
+      <div class="form-group <?= $this->getErroCss('email') ?>">
           <input name="email" placeholder='E-mail' type='text' class="form-control" autofocus value="<?= $this->getPost('email') ?>">
       </div>
       <div class="form-group <?= $this->getErroCss('senha') ?>">
           <input name="senha" placeholder='Senha' class="form-control" type="password">
       </div>
-      <div class="form-group <?= $this->getErroCss('senha2') ?>">
-          <input name="senha2" placeholder='Confirmar Senha' class="form-control" type="password">
+      <div class="form-group <?= $this->getErroCss('nome') ?>">
+          <input name="nome" placeholder='Nome' class="form-control" type="text">
       </div>
-      <div class="form-group">
-          <select name="tipo" class="form-control" required>
-            <option value="">Selecione o tipo de usuário...</option>
-            <option value="programador">Programador</option>
-            <option value="chefe">Chefe</option>
-            <option value="rh">RH</option>
-          </select>
+      <div class="form-group <?= $this->getErroCss('sobrenome') ?>">
+          <input name="sobrenome" placeholder='Sobrenome' class="form-control" type="text">
       </div>
-      <div class="divCheck">
-        <input type="checkbox"  required />
-        <span>Aceito os Termos de Cadastramento</span>
+      <div class="form-group <?= $this->getErroCss('Telefone') ?>">
+          <input name="telefone" placeholder='telefone' class="form-control" type="text">
       </div>
-      <button type="submit">Cadastrar</button>
+      <div class="form-group <?= $this->getErroCss('idade') ?>">
+          <input name="idade" placeholder='Idade' class="form-control" type="number">
+      </div>
+      <div class="form-group <?= $this->getErroCss('genero') ?>">
+          <select name="genero" class="form-control" id="genero" style="border-radius: 60px; border: none; margin-top: 30px">
+              <option value="M" selected>Masculino</option>
+              <option value="F">Feminino</option>
+        </select>
+      </div>
+      <div class="form-group <?= $this->getErroCss('cidade') ?>">
+          <input name="cidade" placeholder='Cidade' class="form-control" type="text">
+      </div>
+      <div class="form-group <?= $this->getErroCss('uf') ?>">
+          <select name="uf" class="form-control" id="uf" style="border-radius: 60px; border: none; margin-top: 30px">
+              <option value="MG">Minas Gerais</option>
+              <option value="PR" selected>Paraná</option>
+              <option value="RJ">Rio de Janeiro</option>
+              <option value="RS">Rio Grande do Sul</option>
+              <option value="SC">Santa Catarina</option>
+              <option value="SP">São Paulo</option>
+
+        </select>
+      </div>
+      <div class="form-group <?= $this->getErroCss('sobre') ?>">
+          <textarea name="sobre" placeholder='sobre' class="form-control"></textarea>
+      </div>
+      <div class="form-group <?= $this->getErroCss('foto') ?>">
+           <label class="control-label" style="font-size:small; text-transform:uppercase"for="foto">Currículo (somente PDF)</label>
+            <?php $this->incluirVisao('util/formErro.php', ['campo' => 'curriculo']) ?>
+            <input id="curriculo" name="curriculo" class="form-control" type="file">
+      </div>
+      <div class="form-group <?= $this->getErroCss('foto') ?>">
+           <label class="control-label" style="font-size:small; text-transform:uppercase"for="foto">Foto (somente PNG)</label>
+            <?php $this->incluirVisao('util/formErro.php', ['campo' => 'foto']) ?>
+            <input id="foto" name="foto" class="form-control" type="file">
+      </div>
+      <button type="submit" style="margin-top:10px">Cadastrar</button>
     </form>
   </div>
 

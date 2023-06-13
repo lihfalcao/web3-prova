@@ -6,26 +6,33 @@ use \Framework\DW3BancoDeDados;
 
 class Vaga extends Modelo
 {
-    const BUSCAR_TODOS = 'SELECT vagas.*, programador.nome as programador_nome, programador.criado_dia as programador_criado_dia, programador.foto as programador_foto, programador.cidade as programador_cidade, programador.uf as programador_uf, empresa.nome as empresa_nome, empresa.criado_dia as empresa_criado_dia, empresa.foto as empresa_foto, empresa.cidade as empresa_cidade, empresa.uf as empresa_uf FROM vagas v LEFT JOIN usuarios programador ON (v.programador = programador.id)  LEFT JOIN usuarios empresa ON (v.quem_convidou = empresa.id) ORDER BY v.id LIMIT ? OFFSET ?';
+    const BUSCAR_TODOS = 'SELECT v.*, programador.email as programador_email, programador.nome as programador_nome, programador.sobrenome as programador_sobrenome,programador.criado_dia as programador_criado_dia, programador.genero as programador_genero, programador.cidade as programador_cidade, programador.uf as programador_uf FROM vagas v LEFT JOIN usuarios programador ON (v.programador = programador.id) ORDER BY programador.nome LIMIT ? OFFSET ?';
     const BUSCAR_ID = 'SELECT * FROM vagas WHERE id = ? LIMIT 1';
     const INSERIR = 'INSERT INTO vagas(usuario_id,texto) VALUES (?, ?)';
     const DELETAR = 'DELETE FROM vagas WHERE id = ?';
     const CONTAR_TODOS = 'SELECT count(id) FROM vagas';
     private $id;
     private $usuarioId;
+    private $programador;
+    private $statusProposta;
     private $texto;
     private $usuario;
 
     public function __construct(
         $usuarioId,
         $texto,
+        $programador,
+        $statusProposta,
+        $id = null,
         $usuario = null,
-        $id = null
     ) {
         $this->id = $id;
         $this->usuarioId = $usuarioId;
+        $this->programador = $programador;
+        $this->statusProposta = $statusProposta;
         $this->texto = $texto;
         $this->usuario = $usuario;
+
     }
 
     public function getId()
@@ -48,6 +55,18 @@ class Vaga extends Modelo
         return $this->usuarioId;
     }
 
+
+    public function getProgramador()
+    {
+        return $this->programador;
+    }
+
+    public function getStatusProposta()
+    {
+        return $this->statusProposta;
+    }
+
+
     public function salvar()
     {
         $this->inserir();
@@ -57,7 +76,7 @@ class Vaga extends Modelo
     {
         DW3BancoDeDados::getPdo()->beginTransaction();
         $comando = DW3BancoDeDados::prepare(self::INSERIR);
-        $comando->bindValue(1, $this->usuarioId, PDO::PARAM_INT);
+        $comando->bindValue(1, $this->id, PDO::PARAM_INT);
         $comando->bindValue(2, $this->texto, PDO::PARAM_STR);
         $comando->execute();
         $this->id = DW3BancoDeDados::getPdo()->lastInsertId();
@@ -96,19 +115,31 @@ class Vaga extends Modelo
         $registros = $comando->fetchAll();
         $objetos = [];
         foreach ($registros as $registro) {
-            $usuario = new Usuario(
-                $registro['email'],
+            $programador = new Usuario(
+                $registro['programador_email'],
                 '',
+                $registro['programador_nome'],
+                $registro['programador_sobrenome'],
+                $registro['programador_genero'],
+                $registro['programador_cidade'],
+                $registro['programador_uf'],
+                $registro['programador_telefone'],
+                $registro['programador_sobre'],
+                $registro['programador_idade'],
                 null,
-                $registro['u_id']
+                null,
+                $registro['programador_empresa'],
+                $registro['programador_admin'],
+                $registro['programador_id'],
             );
             $objetos[] = new Vaga(
-                $registro['u_id'],
-                $registro['texto'],
-                $usuario,
-                $registro['m_id']
+                $registro['id'],
+                $registro['usuarioId'],
+                $programador,
+                $registro['status_proposta'],
             );
         }
+        
         return $objetos;
     }
 

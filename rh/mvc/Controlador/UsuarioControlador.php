@@ -12,7 +12,11 @@ class UsuarioControlador extends Controlador
 
     public function armazenar()
     {
-        $usuario = new Usuario($_POST['email'], $_POST['senha'], $_POST['tipo']);
+        $foto = array_key_exists('foto', $_FILES) ? $_FILES['foto'] : null;
+        $curriculo = array_key_exists('curriculo', $_FILES) ? $_FILES['curriculo'] : null;
+
+        $usuario = new Usuario($_POST['email'], $_POST['senha'],$_POST['nome'], $_POST['sobrenome'], $_POST['genero'], $_POST['cidade'], $_POST['uf'],
+        $_POST['telefone'],  $_POST['sobre'], $_POST['idade'], $curriculo, $foto);
 
         if ($usuario->isValido()) {
             $usuario->salvar();
@@ -20,7 +24,7 @@ class UsuarioControlador extends Controlador
 
         } else {
             $this->setErros($usuario->getValidacaoErros());
-            $this->visao('usuarios/criar.php');
+            $this->visao('login/criar.php');
         }
     }
 
