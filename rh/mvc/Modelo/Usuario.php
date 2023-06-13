@@ -9,7 +9,6 @@ class Usuario extends Modelo
 {
     const BUSCAR_ID = 'SELECT * FROM usuarios WHERE id = ?';
     const BUSCAR_POR_EMAIL = 'SELECT * FROM usuarios WHERE email = ? LIMIT 1';
-    const BUSCAR_CHEFE = 'SELECT * FROM usuarios WHERE programador = false AND admin = false LIMIT 1';
     const INSERIR = 'INSERT INTO usuarios(email, senha, programador, telefone, sobre, nome, sobrenome, genero, cidade, uf, criado_dia, idade, empresa, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
     private $id;
     private $email;
@@ -165,12 +164,7 @@ class Usuario extends Modelo
 
         if (DW3ImagemUpload::existeUpload($this->foto)
         && !DW3ImagemUpload::isValida($this->foto)) {
-        $this->setErroMensagem('foto', 'Deve ser de no máximo 500 KB.');
-        }
-
-        if (DW3ImagemUpload::existeUpload($this->curriculo)
-        && !DW3ImagemUpload::isValida($this->curriculo)) {
-        $this->setErroMensagem('curriculo', 'Deve ser de no máximo 500 KB.');
+        $this->setErroMensagem('foto', 'Deve ser de no máximo 1000 KB.');
         }
 
     }
@@ -207,12 +201,12 @@ class Usuario extends Modelo
     private function salvarImagem()
     {
         if (DW3ImagemUpload::isValida($this->foto)) {
-            $nomeCompleto = PASTA_PUBLICO . "img/foto/{$this->id}{$this->nome}.png";
+            $nomeCompleto = PASTA_PUBLICO . "img/{$this->id}{$this->nome}.png";
             DW3ImagemUpload::salvar($this->foto, $nomeCompleto);
         }
 
-        if (DW3ImagemUpload::isValida($this->curriculo)) {
-            $nomeCompleto = PASTA_PUBLICO . "img/curriculo/{$this->id}{$this->nome}.pdf";
+        if ($this->curriculo) {
+            $nomeCompleto = PASTA_PUBLICO . "img/{$this->id}{$this->nome}.pdf";
             DW3ImagemUpload::salvar($this->curriculo, $nomeCompleto);
         }
     }
@@ -275,35 +269,8 @@ class Usuario extends Modelo
                 $registro['admin'],
                 $registro['id']
             );
-            $objeto->senha = $registro['senha'];
-            $objeto->nome = $registro['nome'];
 
         }
         return $objeto;
-    }
-
-
-    public static function buscarChefe()
-    {
-        $comando = DW3BancoDeDados::prepare(self::BUSCAR_CHEFE);
-        $comando->execute();
-        $registro = $comando->fetch();
-        return new Usuario(
-            $registro['email'],
-                '',
-                $registro['nome'],
-                $registro['sobrenome'],
-                $registro['genero'],
-                $registro['cidade'],
-                $registro['uf'],
-                $registro['telefone'],
-                $registro['sobre'],
-                $registro['idade'],
-                null,
-                null,
-                $registro['empresa'],
-                $registro['admin'],
-                $registro['id']
-        );
     }
 }

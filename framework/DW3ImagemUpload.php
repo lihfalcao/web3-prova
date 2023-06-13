@@ -6,7 +6,7 @@ class DW3ImagemUpload
     const NOME_TEMPORARIO = 'tmp_name';
     const TAMANHO = 'size';
     const KILOBYTE = 1024;
-    const TAMANHO_MAXIMO = 500 * self::KILOBYTE;
+    const TAMANHO_MAXIMO = 1000 * self::KILOBYTE;
 
     // verifica se tudo é valido
     public static function isValida($arquivo)

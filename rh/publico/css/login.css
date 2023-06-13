@@ -7,7 +7,8 @@
   flex-direction: column;
   align-items: center;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
   border-radius: 10px;
   box-shadow: 0 0 20px 0 darkgrey;
 }
@@ -86,6 +87,10 @@ button[type="submit"] {
 
 button[type="submit"]:hover{
   background: #3e9eaf;
+}
+
+button:focus{
+  outline: none;
 }
 
 .divCheck {
@@ -200,4 +205,8 @@ dialog {
   background-image: -ms-linear-gradient(top, #7ed68a, #6ab358);
   background-image: -o-linear-gradient(top, #7ed68a, #6ab358);
   background-image: linear-gradient(to bottom, #7ed68a, #6ab358);
+}
+
+#signup:focus{
+  outline: none;
 }
