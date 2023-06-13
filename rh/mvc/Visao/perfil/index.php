@@ -9,9 +9,9 @@
               <div class="site-header__end top">
                 <p style="color:gray; font-weight: bold; margin: auto"><?= ($usuario->getGenero() == 'M' ? 'Bem-vindo ' : 'Bem-vinda ') . $usuario->getNome() ?></p>
                 <form action="<?= URL_RAIZ . 'login' ?>" method="post">
-                  <input type="hidden" name="_metodo" value="DELETE">
-                  <button id="logout" >Logout</button>
-                </form>
+					<input type="hidden" name="_metodo" value="DELETE">
+					<button id="logout" >Logout</button>
+				</form>
               </div>
             </div>
           </div>

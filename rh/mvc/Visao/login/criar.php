@@ -72,7 +72,7 @@
             <?php $this->incluirVisao('util/formErro.php', ['campo' => 'foto']) ?>
             <input id="foto" name="foto" class="form-control" type="file">
       </div>
-      <button type="submit" style="margin-top:10px">Cadastrar</button>
+      <button type="submit" style="margin-top:10px; margin-bottom:30px">Cadastrar</button>
     </form>
   </div>
 

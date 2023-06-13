@@ -1,6 +1,7 @@
 <?php
 namespace Controlador;
 
+use Framework\DW3Sessao;
 use \Modelo\Usuario;
 
 class UsuarioControlador extends Controlador
@@ -8,6 +9,13 @@ class UsuarioControlador extends Controlador
     public function criar()
     {
         $this->visao('usuarios/criar.php');
+    }
+
+    public function perfil()
+    {
+        $this->visao('perfil/index.php', [
+            'usuario' => Usuario::buscarId(DW3Sessao::get('usuario'))
+        ]);
     }
 
     public function armazenar()

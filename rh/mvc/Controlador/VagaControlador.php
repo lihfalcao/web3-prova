@@ -7,34 +7,43 @@ use \Modelo\Vaga;
 
 class VagaControlador extends Controlador
 {
-    private function calcularPaginacao()
+    private function calcularPaginacao($tipo, $id)
     {
         $pagina = array_key_exists('p', $_GET) ? intval($_GET['p']) : 1;
         $limit = 4;
         $offset = ($pagina - 1) * $limit;
-        $vagas = Vaga::buscarTodos($limit, $offset);
-        $ultimaPagina = ceil(Vaga::contarTodos() / $limit);
+        $vagas = $tipo == 'chefe' ? Vaga::buscarTodos($limit, $offset) : 
+                 Vaga::buscarVagas($id, $limit, $offset);
+        $ultimaPagina = ceil(Vaga::contarTodos($tipo, $id) / $limit);
         return compact('pagina', 'vagas', 'ultimaPagina');
     }
 
     public function criar()
     {
-        $this->visao('vaga/criar.php');
+        $this->visao('vaga/criar.php',[
+            'usuario' => Usuario::buscarId(DW3Sessao::get('usuario'))
+        ]);
     }
 
     public function convidar()
     {
-        $this->visao('vaga/convidar.php');
+        $this->visao('vaga/convidar.php',[
+            'usuario' => Usuario::buscarId(DW3Sessao::get('usuario'))
+        ]);
     }
 
     public function index()
     {
         $this->verificarLogado();
-        $paginacao = $this->calcularPaginacao();
+        $usuario = Usuario::buscarId(DW3Sessao::get('usuario'));
+        $chefe = Vaga::buscarChefe();
+        $tipo = $usuario->getId() == $chefe->getId() ? 'chefe' : 'programador';
+        $paginacao = $this->calcularPaginacao($tipo, $usuario->getId());
         $this->visao('home/index.php', [
             'vagas' => $paginacao['vagas'],
             'pagina' => $paginacao['pagina'],
-            'usuario' =>Usuario::buscarId(DW3Sessao::get('usuario')),
+            'usuario' => $usuario,
+            'chefe' => $chefe,
             'ultimaPagina' => $paginacao['ultimaPagina'],
             'MensagemFlash' => DW3Sessao::getFlash('HomeFlash')
         ]);
@@ -43,6 +52,7 @@ class VagaControlador extends Controlador
     public function armazenar()
     {
         $this->verificarLogado();
+        
         $vaga = new Vaga(
             DW3Sessao::get('usuario'),
             $_POST['texto'],
@@ -55,7 +65,10 @@ class VagaControlador extends Controlador
             $this->redirecionar(URL_RAIZ . 'mensagens');
 
         } else {
-            $paginacao = $this->calcularPaginacao();
+            $usuario = Usuario::buscarId(DW3Sessao::get('usuario'));
+            $chefe = Vaga::buscarChefe();
+            $tipo = $usuario->getId() == $chefe->getId() ? 'chefe' : 'programador';
+            $paginacao = $this->calcularPaginacao($tipo, $usuario->getId());
             $this->setErros($vaga->getValidacaoErros());
             $this->visao('mensagens/index.php', [
                 'mensagens' => $paginacao['mensagens'],
@@ -66,16 +79,16 @@ class VagaControlador extends Controlador
         }
     }
 
-    public function destruir($id)
-    {
-        $this->verificarLogado();
-        $vaga = Vaga::buscarId($id);
-        if ($vaga->getUsuario() == $this->getUsuario()) {
-            Vaga::destruir($id);
-            DW3Sessao::setFlash('mensagemFlash', 'Mensagem destruida.');
-        } else {
-            DW3Sessao::setFlash('mensagemFlash', 'Você não pode deletar as mensagens dos outros.');
-        }
-        $this->redirecionar(URL_RAIZ . 'mensagens');
-    }
+    // public function destruir($id)
+    // {
+    //     $this->verificarLogado();
+    //     $vaga = Vaga::buscarId($id);
+    //     if ($vaga->getUsuario() == $this->getUsuario()) {
+    //         Vaga::destruir($id);
+    //         DW3Sessao::setFlash('mensagemFlash', 'Mensagem destruida.');
+    //     } else {
+    //         DW3Sessao::setFlash('mensagemFlash', 'Você não pode deletar as mensagens dos outros.');
+    //     }
+    //     $this->redirecionar(URL_RAIZ . 'mensagens');
+    // }
 }
