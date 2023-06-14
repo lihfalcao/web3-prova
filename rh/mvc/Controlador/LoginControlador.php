@@ -8,7 +8,9 @@ class LoginControlador extends Controlador
 {
     public function criar()
     {
-        $this->visao('login/criar.php');
+        $this->visao('login/criar.php', [
+            'mensagemFlash' => DW3Sessao::getFlash('mensagemFlash')
+        ]);
     }
 
     public function armazenar()

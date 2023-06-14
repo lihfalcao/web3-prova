@@ -6,25 +6,40 @@ use \Framework\DW3BancoDeDados;
 
 class Vaga extends Modelo
 {
-    const BUSCAR_TODOS = 'SELECT usuarios.*, vagas.id as vaga_id, vagas.status_proposta FROM usuarios LEFT JOIN vagas on vagas.programador = usuarios.id 
+    const BUSCAR_TODOS = 'SELECT usuarios.*, vagas.id as vaga_id, vagas.status_proposta, vagas.cargo FROM usuarios LEFT JOIN vagas on vagas.programador = usuarios.id 
     WHERE usuarios.programador = true  ORDER BY nome ASC LIMIT ? OFFSET ?';
+    const BUSCAR_ACEITOS = 'SELECT usuarios.*, vagas.id as vaga_id, vagas.status_proposta FROM usuarios LEFT JOIN vagas on vagas.programador = usuarios.id 
+    WHERE usuarios.programador = true AND vagas.status_proposta = "aceito" ORDER BY nome ASC LIMIT ? OFFSET ?';
     const BUSCAR_VAGAS = 'SELECT vagas.* FROM vagas WHERE programador = ?  ORDER BY id ASC LIMIT ? OFFSET ?';
     const BUSCAR_CHEFE = 'SELECT * FROM usuarios WHERE programador = false AND admin = false LIMIT 1';
     const BUSCAR_ID = 'SELECT * FROM vagas WHERE id = ? LIMIT 1';
-    const INSERIR = 'INSERT INTO vagas(usuario_id,texto) VALUES (?, ?)';
-    const DELETAR = 'DELETE FROM vagas WHERE id = ?';
+    const INSERIR = 'INSERT INTO vagas(cargo, framework, salario, tipo, data_convite, programador, status_proposta) VALUES (?, ?, ?, ?, ?, ?, ?)';
     const CONTAR_TODOS = 'SELECT count(id) FROM usuarios WHERE usuarios.programador = true';
     const CONTAR_VAGAS = 'SELECT count(id) FROM vagas WHERE programador = ?';
     private $id;
+    private $cargo;
+    private $framework;
+    private $salario;
+    private $tipo;
+    private $dataConvite;
     private $programador;
     private $statusProposta;
 
     public function __construct(
+        $cargo,
+        $framework,
+        $salario,
+        $tipo,
         $programador,
         $statusProposta,
         $id = null,
     ) {
         $this->id = $id;
+        $this->cargo = $cargo;
+        $this->framework = $framework;
+        $this->salario = $salario;
+        $this->tipo = $tipo;
+        $this->dataConvite = date("Y/m/d");
         $this->programador = $programador;
         $this->statusProposta = $statusProposta;
     }
@@ -32,6 +47,31 @@ class Vaga extends Modelo
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getFramework()
+    {
+        return $this->framework;
+    }
+
+    public function getSalario()
+    {
+        return $this->salario;
+    }
+
+    public function getCargo()
+    {
+        return $this->cargo;
+    }
+
+    public function getTipo()
+    {
+        return $this->tipo;
+    }
+
+    public function getDataConvite()
+    {
+        return $this->dataConvite;
     }
 
     public function getProgramador()
@@ -54,8 +94,13 @@ class Vaga extends Modelo
     {
         DW3BancoDeDados::getPdo()->beginTransaction();
         $comando = DW3BancoDeDados::prepare(self::INSERIR);
-        $comando->bindValue(1, $this->id, PDO::PARAM_INT);
-        $comando->bindValue(2, $this->statusProposta, PDO::PARAM_STR);
+        $comando->bindValue(1, $this->cargo, PDO::PARAM_STR);
+        $comando->bindValue(2, $this->framework, PDO::PARAM_STR);
+        $comando->bindValue(3, $this->salario, PDO::PARAM_INT);
+        $comando->bindValue(4, $this->tipo, PDO::PARAM_STR);
+        $comando->bindValue(5, $this->dataConvite, PDO::PARAM_STR);
+        $comando->bindValue(6, $this->programador, PDO::PARAM_INT);
+        $comando->bindValue(7, $this->statusProposta, PDO::PARAM_STR);
         $comando->execute();
         $this->id = DW3BancoDeDados::getPdo()->lastInsertId();
         DW3BancoDeDados::getPdo()->commit();
@@ -70,9 +115,12 @@ class Vaga extends Modelo
         $registro = $comando->fetch();
         if ($registro) {
             $objeto = new Vaga(
-                $registro['usuario_id'],
-                $registro['texto'],
-                null,
+                $registro['cargo'],
+                $registro['framework'],
+                $registro['salario'],
+                $registro['tipo'],
+                $registro['programador'],
+                $registro['status_proposta'],
                 $registro['id']
             );
         }
@@ -111,6 +159,50 @@ class Vaga extends Modelo
                 $registro['id'],
             );
             $objetos[] = new Vaga(
+                $registro['cargo'],
+                '',
+                '',
+                '',
+                $programador,
+                $registro['status_proposta'],
+                $registro['vaga_id']
+            );
+        }
+        
+        return $objetos;
+    }
+
+    public static function buscarAceitos($limit = 4, $offset = 0)
+    {
+        $comando = DW3BancoDeDados::prepare(self::BUSCAR_ACEITOS);
+        $comando->bindValue(1, $limit, PDO::PARAM_INT);
+        $comando->bindValue(2, $offset, PDO::PARAM_INT);
+        $comando->execute();
+        $registros = $comando->fetchAll();
+        $objetos = [];
+        foreach ($registros as $registro) {
+            $programador = new Usuario(
+                $registro['email'],
+                '',
+                $registro['nome'],
+                $registro['sobrenome'],
+                $registro['genero'],
+                $registro['cidade'],
+                $registro['uf'],
+                $registro['telefone'],
+                $registro['sobre'],
+                $registro['idade'],
+                null,
+                null,
+                $registro['empresa'],
+                $registro['admin'],
+                $registro['id'],
+            );
+            $objetos[] = new Vaga(
+                '',
+                '',
+                '',
+                '',
                 $programador,
                 $registro['status_proposta'],
                 $registro['vaga_id']
@@ -131,9 +223,13 @@ class Vaga extends Modelo
         $objetos = [];
         foreach ($registros as $registro) {
             $objetos[] = new Vaga(
+                $registro['cargo'],
+                $registro['framework'],
+                $registro['salario'],
+                $registro['tipo'],
                 $id,
                 $registro['status_proposta'],
-                $registro['vaga_id']
+                $registro['id']
             );
         }
         
@@ -176,17 +272,4 @@ class Vaga extends Modelo
         );
     }
 
-    public static function destruir($id)
-    {
-        $comando = DW3BancoDeDados::prepare(self::DELETAR);
-        $comando->bindValue(1, $id, PDO::PARAM_INT);
-        $comando->execute();
-    }
-
-    protected function verificarErros()
-    {
-        if (strlen($this->statusProposta) < 3) {
-            $this->setErroMensagem('texto', 'Mínimo 3 caracteres.');
-        }
-    }
 }

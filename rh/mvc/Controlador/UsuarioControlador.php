@@ -3,6 +3,7 @@ namespace Controlador;
 
 use Framework\DW3Sessao;
 use \Modelo\Usuario;
+use Modelo\Vaga;
 
 class UsuarioControlador extends Controlador
 {
@@ -13,10 +14,14 @@ class UsuarioControlador extends Controlador
 
     public function perfil()
     {
+        $chefe = Vaga::buscarChefe();
+        $usuario = Usuario::buscarId(DW3Sessao::get('usuario'));
         $this->visao('perfil/index.php', [
-            'usuario' => Usuario::buscarId(DW3Sessao::get('usuario'))
+            'usuario' => $usuario,
+            'chefe' => $chefe
         ]);
     }
+
 
     public function armazenar()
     {
@@ -24,15 +29,15 @@ class UsuarioControlador extends Controlador
         $curriculo = array_key_exists('curriculo', $_FILES) ? $_FILES['curriculo'] : null;
 
         $usuario = new Usuario($_POST['email'], $_POST['senha'],$_POST['nome'], $_POST['sobrenome'], $_POST['genero'], $_POST['cidade'], $_POST['uf'],
-        $_POST['telefone'],  $_POST['sobre'], $_POST['idade'], $curriculo, $foto);
+        $_POST['telefone'], $_POST['sobre'], $_POST['idade'], $curriculo, $foto);
 
         if ($usuario->isValido()) {
             $usuario->salvar();
-            $this->redirecionar(URL_RAIZ . 'usuarios/sucesso');
+            DW3Sessao::setFlash('mensagemFlash', 'Programador cadastrado.');
+            $this->redirecionar(URL_RAIZ . 'home');
 
         } else {
-            $this->setErros($usuario->getValidacaoErros());
-            $this->visao('login/criar.php');
+            $this->visao('vaga/criar.php');
         }
     }
 

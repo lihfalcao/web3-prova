@@ -20,7 +20,6 @@ $rotas = [
     ],
     '/home' => [
         'GET' => '\Controlador\VagaControlador#index',
-        'POST' => '\Controlador\VagaControlador#armazenar',
     ],
     '/vaga/criar' => [
         'GET' => '\Controlador\VagaControlador#criar',
@@ -31,4 +30,8 @@ $rotas = [
     '/perfil' => [
         'GET' => '\Controlador\UsuarioControlador#perfil',
     ],
+    '/vaga' => [
+        'POST' => '\Controlador\VagaControlador#armazenar',
+        'DELETE' => '\Controlador\VagaControlador#destruir',
+    ]
 ];

@@ -23,7 +23,9 @@
 							<nav class="nav">
 							<ul class="nav__wrapper">
 								<li class="nav__item"><a href="<?= URL_RAIZ . 'home' ?>" id="home">Home</a></li>
+								<?php if ( $chefe->getId() ==  $usuario->getId()) : ?>
 								<li class="nav__item"><a href="<?= URL_RAIZ . 'vaga/criar' ?>" id="vaga">Cadastrar Vaga</a></li>
+								<?php endif ?>
 							</ul>
 							</nav>
 				</div>
@@ -38,6 +40,12 @@
         </header>
 
 <div class="container">
+	<?php if ($mensagemFlash) : ?>
+		<div class="alert alert-success alert-dismissible" style="margin-top: 2em">
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<?= $mensagemFlash ?>
+		</div>
+	<?php endif ?>
 			<div class="row">
 				<div class="col-md-12">
 					<div class="table-wrap">
@@ -48,6 +56,7 @@
 						      <th>&nbsp;</th>
 						      <th>Email</th>
 						      <th>Nome</th>
+						      <th>Vaga</th>
 						      <th>Status</th>
 						      <th>&nbsp;</th>
 						    </tr>
@@ -70,12 +79,15 @@
 								<p style="font-weight: bold;"><?= $vaga->getProgramador()->getNome() ?> <?= $vaga->getProgramador()->getSobrenome() ?></p>
 						      	<p style="margin-top: 0.5em; text-transform: uppercase; font-size: smaller; color: gray;"><?= $vaga->getProgramador()->getCidade() ?> - <?= $vaga->getProgramador()->getUf() ?></p>
 							  </td>
-							  <?php if ($vaga->getStatusProposta() == 'contratado') : ?>
+							  <td><?= $vaga->getCargo() ?></td>
+							  <?php if ($vaga->getStatusProposta() == 'contratado' || $vaga->getProgramador()->getEmpresa()) : ?>
 								<td class="status"><span class="accept">Contratado</span></td>
 								<td></td>
 							  <?php elseif ($vaga->getStatusProposta() == 'convidado' ) : ?>
 								<td class="status"><span class="waiting">Convidado</span></td>
-								<td></td>
+								<form action="<?= URL_RAIZ . 'vaga/desconvidar' ?>" method="post">
+								<td> <button class="uninvite" type="submit">Desconvidar</button> </td>
+								</form>
 							  <?php else: ?>
 								<td class="status"><span class="active">Disponível</span></td>
 								<td> <button class="invite" style="outline:none" onclick="location.href='<?= URL_RAIZ . 'vaga/convidar/' . $vaga->getProgramador()->getId() ?>'">Convidar</button> </td>
@@ -85,8 +97,11 @@
 						</tbody>
 					</table>
 					<?php endif ?>
-					<?php if ( count($vagas) == 0 ) : ?>
+					<?php if ( count($vagas) == 0 && !$usuario->isAdmin() ) : ?>
 						<h2 style="text-align:center; margin:40px">Não há convites feitos ainda, continue aguardando!</h2>
+					<?php endif ?>
+					<?php if ( count($vagas) == 0 && $usuario->isAdmin() ) : ?>
+						<h2 style="text-align:center; margin:40px">Nenhum programador aceitou convite ainda, continue aguardando!</h2>
 					<?php endif ?>
 					<div style="float:right">
 						<?php if ($pagina > 1) : ?>

@@ -13,15 +13,18 @@ class VagaControlador extends Controlador
         $limit = 4;
         $offset = ($pagina - 1) * $limit;
         $vagas = $tipo == 'chefe' ? Vaga::buscarTodos($limit, $offset) : 
-                 Vaga::buscarVagas($id, $limit, $offset);
+                 ($tipo == 'rh' ? Vaga::buscarVagas($id, $limit, $offset) :
+                Vaga::buscarAceitos($limit, $offset));
         $ultimaPagina = ceil(Vaga::contarTodos($tipo, $id) / $limit);
         return compact('pagina', 'vagas', 'ultimaPagina');
     }
 
     public function criar()
     {
+        $programadores = Usuario::buscarProgramadores();
         $this->visao('vaga/criar.php',[
-            'usuario' => Usuario::buscarId(DW3Sessao::get('usuario'))
+            'usuario' => Usuario::buscarId(DW3Sessao::get('usuario')),
+            'programadores' => $programadores
         ]);
     }
 
@@ -37,7 +40,7 @@ class VagaControlador extends Controlador
         $this->verificarLogado();
         $usuario = Usuario::buscarId(DW3Sessao::get('usuario'));
         $chefe = Vaga::buscarChefe();
-        $tipo = $usuario->getId() == $chefe->getId() ? 'chefe' : 'programador';
+        $tipo = $usuario->getId() == $chefe->getId() ? 'chefe' : ( $usuario->isAdmin() ? 'rh' : 'programador');
         $paginacao = $this->calcularPaginacao($tipo, $usuario->getId());
         $this->visao('home/index.php', [
             'vagas' => $paginacao['vagas'],
@@ -45,7 +48,7 @@ class VagaControlador extends Controlador
             'usuario' => $usuario,
             'chefe' => $chefe,
             'ultimaPagina' => $paginacao['ultimaPagina'],
-            'MensagemFlash' => DW3Sessao::getFlash('HomeFlash')
+            'mensagemFlash' => DW3Sessao::getFlash('mensagemFlash')
         ]);
     }
 
@@ -54,15 +57,17 @@ class VagaControlador extends Controlador
         $this->verificarLogado();
         
         $vaga = new Vaga(
-            DW3Sessao::get('usuario'),
-            $_POST['texto'],
-            '',
-            ''
+            $_POST['cargo'],
+            $_POST['framework'],
+            $_POST['salario'],
+            $_POST['tipo'],
+            $_POST['programador'],
+            'convidado',
         );
         if ($vaga->isValido()) {
             $vaga->salvar();
-            DW3Sessao::setFlash('mensagemFlash', 'Mensagem cadastrada.');
-            $this->redirecionar(URL_RAIZ . 'mensagens');
+            DW3Sessao::setFlash('mensagemFlash', 'Vaga cadastrada.');
+            $this->redirecionar(URL_RAIZ . 'home');
 
         } else {
             $usuario = Usuario::buscarId(DW3Sessao::get('usuario'));
@@ -79,16 +84,4 @@ class VagaControlador extends Controlador
         }
     }
 
-    // public function destruir($id)
-    // {
-    //     $this->verificarLogado();
-    //     $vaga = Vaga::buscarId($id);
-    //     if ($vaga->getUsuario() == $this->getUsuario()) {
-    //         Vaga::destruir($id);
-    //         DW3Sessao::setFlash('mensagemFlash', 'Mensagem destruida.');
-    //     } else {
-    //         DW3Sessao::setFlash('mensagemFlash', 'Você não pode deletar as mensagens dos outros.');
-    //     }
-    //     $this->redirecionar(URL_RAIZ . 'mensagens');
-    // }
 }
