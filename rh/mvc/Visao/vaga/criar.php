@@ -49,9 +49,9 @@
         </div>
         <div class="form-group">
           <select name="tipo" class="form-control" id="tipo">
-                <option value="presencial" selected>Presencial</option>
-                <option value="remota">Remota</option>
-                <option value="hibrida">Híbrida</option>
+                <option value="Presencial" selected>Presencial</option>
+                <option value="Remota">Remota</option>
+                <option value="Híbrida">Híbrida</option>
           </select>
         </div>
         <div class="form-group">

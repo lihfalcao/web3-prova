@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="<?= URL_CSS . 'bootstrap.min.css' ?>">
+<link rel="stylesheet" href="<?= URL_CSS . 'vaga.css' ?>">
 
 <header class="site-header">
           <div class="site-header__top">
@@ -34,3 +35,33 @@
         </div>
     </div>
 </header>
+
+<div class="container">
+  <form action="<?= URL_RAIZ . 'vaga' ?>" method="post">
+        <div class="form-group">
+            <input name="cargo" placeholder='Cargo' type='text' class="form-control" autofocus value="<?= $this->getPost('cargo') ?>">
+        </div>
+        <div class="form-group">
+            <input name="framework" placeholder='Framework' class="form-control" type="text">
+        </div>
+        <div class="form-group">
+            <input name="salario" id="salario" placeholder='Salário' class="form-control" type="text">
+        </div>
+        <div class="form-group">
+          <select name="tipo" class="form-control" id="tipo">
+                <option value="Presencial" selected>Presencial</option>
+                <option value="Remota">Remota</option>
+                <option value="Híbrida">Híbrida</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <select name="programador" class="form-control" id="programador" >
+                <option value="<?= $programador->getId() ?>" selected><?= $programador->getNome() ?></option>
+          </select>
+        </div>
+        <button type="submit">Criar</button>
+    </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+<script src="<?= URL_JS . 'vaga.js'?>"></script>

@@ -21,7 +21,9 @@ class LoginControlador extends Controlador
             $this->redirecionar(URL_RAIZ . 'home');
         } else {
             $this->setErros(['login' => 'Usuário ou senha inválido.']);
-            $this->visao('login/criar.php');
+            $this->visao('login/criar.php', [
+                'mensagemFlash' => DW3Sessao::getFlash('mensagemFlash')
+            ]);
         }
     }
 
