@@ -31,5 +31,5 @@ document.querySelector('#btnSignup')
 })
 
 $(document).ready(function($){
-  $('#telefone').mask("(##) #####-####", {reverse: true});
+  $('#telefone').mask("(##) #####-####", {reverse: false});
 });
