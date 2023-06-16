@@ -59,6 +59,21 @@
 				<div class="col-md-12">
 					<div class="table-wrap">
 					<?php if ( $chefe->getId() ==  $usuario->getId()) : ?>
+						<form method="get" class="margin-bottom">
+							<div class="row" id="filter">
+							<div class="form-group col-md-6">
+								<label class="control-label" for="id">Programador</label>
+								<select id="id" name="id" class="form-control" autofocus>
+									<option value="">Todos</option>
+									<?php foreach ($programadores as $programador) : ?>
+										<?php $selected = $this->getGet('id') == $programador['id'] ? 'selected' : '' ?>
+										<option value="<?= $programador['id'] ?>" <?= $selected ?>><?= $programador['nome'] ?></option>
+									<?php endforeach ?>
+								</select>
+							</div>
+							<button type="submit" class="btn btn-primary center-block largura100">Filtrar</button>
+							</div>
+						</form>
 						<table class="table table-responsive-xl">
 						<thead>
 						    <tr>

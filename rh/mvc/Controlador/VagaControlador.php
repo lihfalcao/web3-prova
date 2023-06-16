@@ -12,7 +12,7 @@ class VagaControlador extends Controlador
         $pagina = array_key_exists('p', $_GET) ? intval($_GET['p']) : 1;
         $limit = 4;
         $offset = ($pagina - 1) * $limit;
-        $vagas = $tipo == 'chefe' ? Vaga::buscarTodos($limit, $offset) : 
+        $vagas = $tipo == 'chefe' ? Vaga::buscarTodos($limit, $offset, $_GET) : 
                  ($tipo == 'programador' ? Vaga::buscarVagas($id, $limit, $offset) :
                  ($tipo == 'rh' ? Vaga::buscarAceitos($limit, $offset)
                  : Vaga::buscarContratados($limit, $offset)));
@@ -24,7 +24,7 @@ class VagaControlador extends Controlador
     {
         $this->verificarLogado();
 
-        $programadores = Usuario::buscarProgramadores();
+        $programadores = Usuario::buscarProgramadoresDisponiveis();
         $this->visao('vaga/criar.php',[
             'usuario' => Usuario::buscarId(DW3Sessao::get('usuario')),
             'programadores' => $programadores
@@ -86,12 +86,13 @@ class VagaControlador extends Controlador
         $chefe = Vaga::buscarChefe();
         $tipo = $usuario->getId() == $chefe->getId() ? 'chefe' : ( $usuario->isAdmin() ? 'rh' : 'programador');
         $paginacao = $this->calcularPaginacao($tipo, $usuario->getId());
-
+        $programadores = Usuario::buscarProgramadores();
         $this->visao('home/index.php', [
             'vagas' => $paginacao['vagas'],
             'pagina' => $paginacao['pagina'],
             'usuario' => $usuario,
             'chefe' => $chefe,
+            'programadores' => $programadores,
             'ultimaPagina' => $paginacao['ultimaPagina'],
             'mensagemFlash' => DW3Sessao::getFlash('mensagemFlash'),
             'mensagemFlashDanger' => DW3Sessao::getFlash('mensagemFlashDanger')

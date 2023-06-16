@@ -9,7 +9,8 @@ class Usuario extends Modelo
 {
     const BUSCAR_ID = 'SELECT * FROM usuarios WHERE id = ?';
     const BUSCAR_POR_EMAIL = 'SELECT * FROM usuarios WHERE email = ? LIMIT 1';
-    const BUSCAR_PROGRAMADORES = 'SELECT nome, id FROM usuarios WHERE programador = 1 AND empresa is Null ORDER BY nome ASC';
+    const BUSCAR_PROGRAMADORES = 'SELECT nome, id FROM usuarios WHERE programador = 1 ORDER BY nome ASC';
+    const BUSCAR_PROGRAMADORES_DISPONIVEIS = 'SELECT nome, id FROM usuarios WHERE programador = 1 AND empresa is Null ORDER BY nome ASC';
     const INSERIR = 'INSERT INTO usuarios(email, senha, programador, telefone, sobre, nome, sobrenome, genero, cidade, uf, criado_dia, idade, empresa, admin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
     private $id;
     private $email;
@@ -25,7 +26,6 @@ class Usuario extends Modelo
     private $uf;
     private $criadoDia;
     private $idade;
-    private $curriculo;
     private $foto;
     private $empresa;
     private $admin;
@@ -43,7 +43,6 @@ class Usuario extends Modelo
         $telefone,
         $sobre,
         $idade,
-        $curriculo = null,
         $foto = null,
         $empresa = null,
         $admin = false,
@@ -62,7 +61,6 @@ class Usuario extends Modelo
         $this->uf = $uf;
         $this->criadoDia = date("Y/m/d");
         $this->idade = $idade;
-        $this->curriculo = $curriculo;
         $this->foto = $foto;
         $this->empresa = $empresa;
         $this->senhaPlana = $senhaPlana;
@@ -223,10 +221,6 @@ class Usuario extends Modelo
             DW3ImagemUpload::salvar($this->foto, $nomeCompleto);
         }
 
-        if ($this->curriculo) {
-            $nomeCompleto = PASTA_PUBLICO . "img/{$this->id}{$this->nome}.pdf";
-            DW3ImagemUpload::salvar($this->curriculo, $nomeCompleto);
-        }
     }
 
     public static function buscarEmail($email)
@@ -248,7 +242,6 @@ class Usuario extends Modelo
                 $registro['telefone'],
                 $registro['sobre'],
                 $registro['idade'],
-                null,
                 null,
                 $registro['empresa'],
                 $registro['admin'],
@@ -282,7 +275,6 @@ class Usuario extends Modelo
                 $registro['sobre'],
                 $registro['idade'],
                 null,
-                null,
                 $registro['empresa'],
                 $registro['admin'],
                 $registro['id']
@@ -295,6 +287,12 @@ class Usuario extends Modelo
     public static function buscarProgramadores()
     {
         $registros = DW3BancoDeDados::query(self::BUSCAR_PROGRAMADORES);
+        return $registros->fetchAll();
+    }
+
+    public static function buscarProgramadoresDisponiveis()
+    {
+        $registros = DW3BancoDeDados::query(self::BUSCAR_PROGRAMADORES_DISPONIVEIS);
         return $registros->fetchAll();
     }
 }

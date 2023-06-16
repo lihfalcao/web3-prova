@@ -7,7 +7,7 @@ use \Framework\DW3BancoDeDados;
 class Vaga extends Modelo
 {
     const BUSCAR_TODOS = 'SELECT usuarios.*, vagas.id as vaga_id, vagas.status_proposta, vagas.cargo FROM usuarios LEFT JOIN vagas on vagas.programador = usuarios.id 
-    WHERE usuarios.programador = true  ORDER BY nome ASC LIMIT ? OFFSET ?';
+    WHERE usuarios.programador = true';
     const BUSCAR_ACEITOS = 'SELECT usuarios.*, vagas.id as vaga_id, vagas.status_proposta, vagas.cargo FROM usuarios LEFT JOIN vagas on vagas.programador = usuarios.id 
     WHERE usuarios.programador = true AND vagas.status_proposta = "aceito" ORDER BY nome ASC LIMIT ? OFFSET ?';
     const BUSCAR_CONTRATADOS = 'SELECT usuarios.*, vagas.id as vaga_id, vagas.status_proposta, vagas.cargo FROM usuarios LEFT JOIN vagas on vagas.programador = usuarios.id 
@@ -138,11 +138,20 @@ class Vaga extends Modelo
     resolver o problema: query N+1. Com apenas uma consulta no banco
     eu busco tudo que eu preciso.
     */
-    public static function buscarTodos($limit = 4, $offset = 0)
+    public static function buscarTodos($limit = 4, $offset = 0, $filtro = [])
     {
-        $comando = DW3BancoDeDados::prepare(self::BUSCAR_TODOS);
-        $comando->bindValue(1, $limit, PDO::PARAM_INT);
-        $comando->bindValue(2, $offset, PDO::PARAM_INT);
+        $sqlWhere = '';
+        $parametros = [];
+        if (array_key_exists('id', $filtro) && $filtro['id'] != '') {
+            $parametros[] = $filtro['id'];
+            $sqlWhere .= ' AND usuarios.id = ?';
+        }
+
+        $sql = self::BUSCAR_TODOS . $sqlWhere . ' ORDER BY nome ASC LIMIT ' . $limit . ' OFFSET ' . $offset;
+        $comando = DW3BancoDeDados::prepare($sql);
+        foreach ($parametros as $i => $parametro) {
+            $comando->bindValue($i+1, $parametro, PDO::PARAM_STR);
+        }
         $comando->execute();
         $registros = $comando->fetchAll();
         $objetos = [];
@@ -158,7 +167,6 @@ class Vaga extends Modelo
                 $registro['telefone'],
                 $registro['sobre'],
                 $registro['idade'],
-                null,
                 null,
                 $registro['empresa'],
                 $registro['admin'],
@@ -199,7 +207,6 @@ class Vaga extends Modelo
                 $registro['sobre'],
                 $registro['idade'],
                 null,
-                null,
                 $registro['empresa'],
                 $registro['admin'],
                 $registro['id'],
@@ -238,7 +245,6 @@ class Vaga extends Modelo
                 $registro['telefone'],
                 $registro['sobre'],
                 $registro['idade'],
-                null,
                 null,
                 $registro['empresa'],
                 $registro['admin'],
@@ -310,7 +316,6 @@ class Vaga extends Modelo
             $chefe['telefone'],
             $chefe['sobre'],
             $chefe['idade'],
-            null,
             null,
             $chefe['empresa'],
             $chefe['admin'],

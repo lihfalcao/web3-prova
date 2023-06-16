@@ -8346,5 +8346,15 @@
     color: black;
   }
 
+  #filter{
+    align-items: center;
+    margin-left: 300px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  #filter button{
+    margin-top: 15px ;
+  }
                 
   
