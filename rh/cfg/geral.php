@@ -1,6 +1,6 @@
 <?php
 
-const APLICACAO_NOME = 'Chat Online';
+const APLICACAO_NOME = 'RH +++';
 
 // Se a URL_RAIZ mudar, verifique arquivo .htaccess
 const URL_RAIZ = '/web3-prova/rh/';

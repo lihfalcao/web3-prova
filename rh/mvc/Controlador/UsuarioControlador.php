@@ -33,15 +33,13 @@ class UsuarioControlador extends Controlador
         if ($usuario->isValido()) {
             $usuario->salvar();
             DW3Sessao::setFlash('mensagemFlash', 'Programador cadastrado.');
-            $this->redirecionar(URL_RAIZ . 'home');
+            $this->redirecionar(URL_RAIZ . 'login', [
+                'mensagemFlash' => DW3Sessao::getFlash('mensagemFlash')
+            ]);
 
         } else {
-            $this->visao('vaga/criar.php');
+            $this->visao('login/criar.php');
         }
     }
 
-    public function sucesso()
-    {
-        $this->visao('usuarios/sucesso.php');
-    }
 }
