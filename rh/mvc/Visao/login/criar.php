@@ -69,11 +69,6 @@
           <textarea name="sobre" placeholder='sobre' class="form-control"></textarea>
       </div>
       <div class="form-group <?= $this->getErroCss('foto') ?>">
-           <label class="control-label" style="font-size:small; text-transform:uppercase"for="foto">Currículo (somente PDF)</label>
-            <?php $this->incluirVisao('util/formErro.php', ['campo' => 'curriculo']) ?>
-            <input id="curriculo" name="curriculo" class="form-control" type="file">
-      </div>
-      <div class="form-group <?= $this->getErroCss('foto') ?>">
            <label class="control-label" style="font-size:small; text-transform:uppercase"for="foto">Foto (somente PNG)</label>
             <?php $this->incluirVisao('util/formErro.php', ['campo' => 'foto']) ?>
             <input id="foto" name="foto" class="form-control" type="file">
