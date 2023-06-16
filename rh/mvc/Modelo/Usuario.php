@@ -144,15 +144,6 @@ class Usuario extends Modelo
         return $imagemNome;
     }
 
-    public function getCurriculo()
-    {
-        $curriculoNome = "{$this->id}{$this->nome}.pdf";
-        if (!DW3ImagemUpload::existe($curriculoNome)) {
-            $curriculoNome = 'padrao.pdf';
-        }
-        return $curriculoNome;
-    }
-
     public function isProgramador()
     {
         return $this->programador;

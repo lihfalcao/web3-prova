@@ -24,11 +24,18 @@ class VagaControlador extends Controlador
     {
         $this->verificarLogado();
 
-        $programadores = Usuario::buscarProgramadoresDisponiveis();
-        $this->visao('vaga/criar.php',[
-            'usuario' => Usuario::buscarId(DW3Sessao::get('usuario')),
-            'programadores' => $programadores
-        ]);
+        $chefe = Vaga::buscarChefe();
+        $usuario = DW3Sessao::get('usuario');
+
+        if ($chefe->getId() == $usuario) {
+            $programadores = Usuario::buscarProgramadoresDisponiveis();
+            $this->visao('vaga/criar.php',[
+                'usuario' => Usuario::buscarId(DW3Sessao::get('usuario')),
+                'programadores' => $programadores
+            ]);
+        } else {
+            $this->redirecionar(URL_RAIZ . 'home');
+        }
     }
 
     public function contratados()
@@ -36,15 +43,20 @@ class VagaControlador extends Controlador
         $this->verificarLogado();
 
         $usuario = Usuario::buscarId(DW3Sessao::get('usuario'));
-        $tipo = 'contratados';
-        $paginacao = $this->calcularPaginacao($tipo, $usuario->getId());
+        if ($usuario->isAdmin()) {
 
-        $this->visao('vaga/contratados.php',[
-            'vagas' => $paginacao['vagas'],
-            'pagina' => $paginacao['pagina'],
-            'usuario' => $usuario,
-            'ultimaPagina' => $paginacao['ultimaPagina'],
-        ]);
+            $tipo = 'contratados';
+            $paginacao = $this->calcularPaginacao($tipo, $usuario->getId());
+
+            $this->visao('vaga/contratados.php',[
+                'vagas' => $paginacao['vagas'],
+                'pagina' => $paginacao['pagina'],
+                'usuario' => $usuario,
+                'ultimaPagina' => $paginacao['ultimaPagina'],
+            ]);
+        } else {
+            $this->redirecionar(URL_RAIZ . 'home');
+        }
     }
 
 
@@ -52,14 +64,24 @@ class VagaControlador extends Controlador
     {
         $this->verificarLogado();
 
-        $this->visao('vaga/convidar.php',[
-            'usuario' => Usuario::buscarId(DW3Sessao::get('usuario')),
-            'programador' => Usuario::buscarId($_GET['id'])
-        ]);
+        $chefe = Vaga::buscarChefe();
+        $usuario = DW3Sessao::get('usuario');
+
+        if ($chefe->getId() == $usuario) {
+            $this->visao('vaga/convidar.php',[
+                'usuario' => Usuario::buscarId($usuario),
+                'programador' => Usuario::buscarId($_GET['id'])
+            ]);
+        } else {
+            $this->redirecionar(URL_RAIZ . 'home');
+        }
+
     }
 
     public function alterarStatus()
     {
+        $this->verificarLogado();
+
         if($_GET['status'] == 'recusado'){
             Vaga::desconvidar($_GET['programador']);
             DW3Sessao::setFlash('mensagemFlashDanger', 'Convite Recusado.');
@@ -73,9 +95,18 @@ class VagaControlador extends Controlador
 
     public function desconvidar()
     {
+        $this->verificarLogado();
+
+        $chefe = Vaga::buscarChefe();
+        $usuario = DW3Sessao::get('usuario');
+
+        if ($chefe->getId() == $usuario) {
         Vaga::desconvidar($_GET['id']);
         DW3Sessao::setFlash('mensagemFlashDanger', 'Programador desconvidado.');
         $this->redirecionar(URL_RAIZ . 'home');
+        } else {
+            $this->redirecionar(URL_RAIZ . 'home');
+        }
     }
 
     public function index()
