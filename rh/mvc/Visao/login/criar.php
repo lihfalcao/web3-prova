@@ -8,6 +8,12 @@
     </div>
 
    <form action="<?= URL_RAIZ . 'login' ?>" method="post" id="signin">
+      <?php if ($mensagemFlash) : ?>
+        <div class="alert alert-success alert-dismissible" style="margin-top: 2em">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <?= $mensagemFlash ?>
+        </div>
+      <?php endif ?>
       <div class="form-group <?= $this->getErroCss('login') ?>">
           <input name="email" placeholder='E-mail' type='text' class="form-control" autofocus value="<?= $this->getPost('email') ?>">
       </div>
@@ -34,7 +40,7 @@
           <input name="sobrenome" placeholder='Sobrenome' class="form-control" type="text">
       </div>
       <div class="form-group <?= $this->getErroCss('Telefone') ?>">
-          <input name="telefone" placeholder='telefone' class="form-control" type="text">
+          <input id="telefone" name="telefone" placeholder='telefone com DDD' class="form-control" type="text">
       </div>
       <div class="form-group <?= $this->getErroCss('idade') ?>">
           <input name="idade" placeholder='Idade' class="form-control" type="number">
@@ -86,4 +92,5 @@
   </div>
 </dialog>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
 <script src="<?= URL_JS . 'login.js'?>"></script>

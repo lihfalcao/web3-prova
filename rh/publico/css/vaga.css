@@ -1,0 +1,23 @@
+.container {
+    width: 50%;
+    text-align: center;
+    margin-top: 5em;
+}
+
+button[type="submit"] {
+    background: #128ca1;
+    color: white;
+    border-radius: 30px;
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 8px 0 8px 15px;
+    font-size: 15px;
+    margin-top: 40px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    box-shadow: 0px 10px 14px -7px #276873;
+    text-shadow: 0px 1px 0px #3d768a;
+    outline: none !important;
+  }

@@ -1,5 +1,5 @@
-<link rel="stylesheet" href="<?= URL_CSS . 'home.css' ?>">
 <link rel="stylesheet" href="<?= URL_CSS . 'bootstrap.min.css' ?>">
+<link rel="stylesheet" href="<?= URL_CSS . 'home.css' ?>">
 
 
 <header class="site-header">
@@ -23,7 +23,12 @@
 							<nav class="nav">
 							<ul class="nav__wrapper">
 								<li class="nav__item"><a href="<?= URL_RAIZ . 'home' ?>" id="home">Home</a></li>
+								<?php if ( $chefe->getId() ==  $usuario->getId()) : ?>
 								<li class="nav__item"><a href="<?= URL_RAIZ . 'vaga/criar' ?>" id="vaga">Cadastrar Vaga</a></li>
+								<?php endif ?>
+								<?php if ( $chefe->getId() !=  $usuario->getId() && $usuario->isAdmin()) : ?>
+								<li class="nav__item"><a href="<?= URL_RAIZ . 'vaga/contratados' ?>" id="vaga">Contratados</a></li>
+								<?php endif ?>
 							</ul>
 							</nav>
 				</div>
@@ -38,16 +43,44 @@
         </header>
 
 <div class="container">
+	<?php if ($mensagemFlash) : ?>
+		<div class="alert alert-success alert-dismissible" style="margin-top: 2em">
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<?= $mensagemFlash ?>
+		</div>
+	<?php endif ?>
+	<?php if ($mensagemFlashDanger) : ?>
+		<div class="alert alert-danger alert-dismissible" style="margin-top: 2em">
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<?= $mensagemFlashDanger ?>
+		</div>
+	<?php endif ?>
 			<div class="row">
 				<div class="col-md-12">
 					<div class="table-wrap">
 					<?php if ( $chefe->getId() ==  $usuario->getId()) : ?>
+						<form method="get" class="margin-bottom">
+							<div class="row" id="filter">
+							<div class="form-group col-md-6">
+								<label class="control-label" for="id">Programador</label>
+								<select id="id" name="id" class="form-control" autofocus>
+									<option value="">Todos</option>
+									<?php foreach ($programadores as $programador) : ?>
+										<?php $selected = $this->getGet('id') == $programador['id'] ? 'selected' : '' ?>
+										<option value="<?= $programador['id'] ?>" <?= $selected ?>><?= $programador['nome'] ?></option>
+									<?php endforeach ?>
+								</select>
+							</div>
+							<button type="submit" class="btn btn-primary center-block largura100">Filtrar</button>
+							</div>
+						</form>
 						<table class="table table-responsive-xl">
 						<thead>
 						    <tr>
 						      <th>&nbsp;</th>
 						      <th>Email</th>
 						      <th>Nome</th>
+						      <th>Vaga</th>
 						      <th>Status</th>
 						      <th>&nbsp;</th>
 						    </tr>
@@ -70,23 +103,114 @@
 								<p style="font-weight: bold;"><?= $vaga->getProgramador()->getNome() ?> <?= $vaga->getProgramador()->getSobrenome() ?></p>
 						      	<p style="margin-top: 0.5em; text-transform: uppercase; font-size: smaller; color: gray;"><?= $vaga->getProgramador()->getCidade() ?> - <?= $vaga->getProgramador()->getUf() ?></p>
 							  </td>
-							  <?php if ($vaga->getStatusProposta() == 'contratado') : ?>
+							  <td><?= $vaga->getCargo() ?></td>
+							  <?php if ($vaga->getStatusProposta() == 'contratado' || $vaga->getProgramador()->getEmpresa()) : ?>
 								<td class="status"><span class="accept">Contratado</span></td>
 								<td></td>
 							  <?php elseif ($vaga->getStatusProposta() == 'convidado' ) : ?>
 								<td class="status"><span class="waiting">Convidado</span></td>
-								<td></td>
+								<td> <button class="uninvite" style="outline:none" onclick="location.href='<?= URL_RAIZ . 'vaga/desconvidar?id=' . $vaga->getId() ?>'">Desconvidar</button> </td>
 							  <?php else: ?>
 								<td class="status"><span class="active">Disponível</span></td>
-								<td> <button class="invite" style="outline:none" onclick="location.href='<?= URL_RAIZ . 'vaga/convidar/' . $vaga->getProgramador()->getId() ?>'">Convidar</button> </td>
+								<td> <button class="invite" style="outline:none" onclick="location.href='<?= URL_RAIZ . 'vaga/convidar?id=' . $vaga->getProgramador()->getId() ?>'">Convidar</button> </td>
 							  <?php endif ?>
 						    </tr>
 						<?php endforeach ?>
 						</tbody>
 					</table>
 					<?php endif ?>
-					<?php if ( count($vagas) == 0 ) : ?>
+					<?php if ( $chefe->getId() !=  $usuario->getId() && !$usuario->isAdmin()) : ?>
+						<table class="table table-responsive-xl">
+						<thead>
+						    <tr>
+							  <th>&nbsp;</th>
+						      <th>Contato</th>
+						      <th>Empresa</th>
+						      <th>Vaga</th>
+						      <th>Cargo</th>
+						      <th>Salário</th>
+						      <th>Ação</th>
+						      <th>&nbsp;</th>
+						    </tr>
+						  </thead>
+						  <tbody>
+						  <?php foreach ($vagas as $vaga) : ?>
+						    <tr class="alert" role="alert">
+						    	<td></td>
+						      <td class="d-flex align-items-center">
+							  	<img src="<?= URL_IMG . $chefe->getEmpresa() . '.png'?>" alt="Imagem do perfil" class="imagem-usuario pull-left">
+						      	<div class="pl-3 email">
+									<span><b><?= $chefe->getNome() . ' ' . $chefe->getSobrenome() ?></b></span>
+						      		<span style="margin-top: 0.2em !important;"><?= $chefe->getEmail() ?></span>
+						      		<span style="margin-top: 0.2em !important;"><?= $chefe->getTelefone() ?></span>
+						      		<span style="margin-top: 0.2em !important;"><?= $chefe->getCidade() . ' - ' . $chefe->getUf() ?></span>
+									  <?php $date=date_create($vaga->getDataConvite());?>
+						      		<span style="margin-top: 0.2em !important;">Data convite: <?= date_format($date,"d/m/Y"); ?></span>
+						      	</div>
+						      </td>
+						      <td><?= $chefe->getEmpresa() ?></td>
+							  <td><?= $vaga->getTipo() ?></td>
+							  <td>
+								<span><b><?= $vaga->getCargo() ?></b></span><br/>
+								<span>Framework: <?= $vaga->getFramework() ?></span>
+							  </td>
+							  <td>R$<?= $vaga->getSalario() ?></td>
+
+						      <td>
+								<button class="accepted" title="Aceitar" style="outline:none" onclick="location.href='<?= URL_RAIZ . 'vaga?status=aceito&id=' . $vaga->getId() ?>'"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button> 
+								<button class="denied" title="Recusar" style="outline:none" onclick="location.href='<?= URL_RAIZ . 'vaga?status=recusado&id=' . $vaga->getId() ?>'"><i class="fa fa-thumbs-down fa-flip-horizontal" aria-hidden="true"></i></button>
+							  </td>
+						      <td></td>
+
+						    </tr>
+						<?php endforeach ?>
+						</tbody>
+					</table>
+					<?php endif ?>
+					<?php if ( $chefe->getId() !=  $usuario->getId() && $usuario->isAdmin()) : ?>
+						<table class="table table-responsive-xl">
+						<thead>
+						    <tr>
+							  <th>&nbsp;</th>
+						      <th>Email</th>
+						      <th>Nome</th>
+						      <th>Vaga</th>
+						      <th>Status</th>
+						      <th>Ação</th>
+						      <th>&nbsp;</th>
+						    </tr>
+						  </thead>
+						  <tbody>
+						  <?php foreach ($vagas as $vaga) : ?>
+						    <tr class="alert" role="alert">
+						    	<td>
+						    	</td>
+							
+						      <td class="d-flex align-items-center">
+							  	<img src="<?= URL_IMG . $vaga->getProgramador()->getImagem() ?>" alt="Imagem do perfil" class="imagem-usuario pull-left">
+						      	<div class="pl-3 email">
+						      		<span><?= $vaga->getProgramador()->getEmail() ?></span>
+									<?php $date=date_create($vaga->getProgramador()->getCriadoDia());?>
+						      		<span>Membro desde: <?= date_format($date,"d/m/Y"); ?></span>
+						      	</div>
+						      </td>
+						      <td>
+								<p style="font-weight: bold;"><?= $vaga->getProgramador()->getNome() ?> <?= $vaga->getProgramador()->getSobrenome() ?></p>
+						      	<p style="margin-top: 0.5em; text-transform: uppercase; font-size: smaller; color: gray;"><?= $vaga->getProgramador()->getCidade() ?> - <?= $vaga->getProgramador()->getUf() ?></p>
+							  </td>
+							  <td><?= $vaga->getCargo() ?></td>
+								<td class="status"><span class="accept">Aceito</span></td>
+								<td> <button class="invite" style="outline:none" onclick="location.href='<?= URL_RAIZ . 'vaga?status=contratado&id=' . $vaga->getId() . '&programador=' . $vaga->getProgramador()->getId() ?>'">Contratar</button> </td>
+						    </tr>
+						<?php endforeach ?>
+						</tbody>
+					</table>
+					<?php endif ?>
+					<?php if ( count($vagas) == 0 && $chefe->getId() !=  $usuario->getId() && !$usuario->isAdmin() ) : ?>
 						<h2 style="text-align:center; margin:40px">Não há convites feitos ainda, continue aguardando!</h2>
+					<?php endif ?>
+					<?php if ( count($vagas) == 0 && $chefe->getId() !=  $usuario->getId() && $usuario->isAdmin() ) : ?>
+						<h2 style="text-align:center; margin:40px">Nenhum programador aceitou convite ainda, continue aguardando!</h2>
 					<?php endif ?>
 					<div style="float:right">
 						<?php if ($pagina > 1) : ?>

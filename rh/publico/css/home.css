@@ -8284,6 +8284,27 @@
       .denied:hover {
         color: red
       }
+
+      .uninvite {
+        font-size:1em;
+        width:8em;
+        height:2em;
+        border-width:1px;
+        color:#fff;
+        border-color:var(--red);
+        font-weight:bold;
+        border-top-left-radius:8px;
+        border-top-right-radius:8px;
+        border-bottom-left-radius:8px;
+        border-bottom-right-radius:8px;
+        text-shadow: 0px 1px 0px #3d768a;
+        background:linear-gradient(var(--red), #994040);
+        outline: none;
+      }
+      
+      .uninvite:hover {
+        background: linear-gradient(#994040, var(--red));
+      }
   
   
       .invite {
@@ -8325,5 +8346,15 @@
     color: black;
   }
 
+  #filter{
+    align-items: center;
+    margin-left: 300px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  #filter button{
+    margin-top: 15px ;
+  }
                 
   

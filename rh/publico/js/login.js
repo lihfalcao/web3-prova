@@ -29,3 +29,7 @@ document.querySelector('#btnSignup')
     container.style.overflowY  = "scroll"
     document.querySelector('.container').style.height = "650px"
 })
+
+$(document).ready(function($){
+  $('#telefone').mask("(##) #####-####", {reverse: true});
+});

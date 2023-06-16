@@ -12,23 +12,26 @@ $rotas = [
     '/usuarios' => [
         'POST' => '\Controlador\UsuarioControlador#armazenar',
     ],
-    '/usuarios/criar' => [
-        'GET' => '\Controlador\UsuarioControlador#criar',
-    ],
-    '/usuarios/sucesso' => [
-        'GET' => '\Controlador\UsuarioControlador#sucesso',
-    ],
     '/home' => [
         'GET' => '\Controlador\VagaControlador#index',
-        'POST' => '\Controlador\VagaControlador#armazenar',
     ],
     '/vaga/criar' => [
         'GET' => '\Controlador\VagaControlador#criar',
     ],
-    '/vaga/convidar/?' => [
+    '/vaga/convidar' => [
         'GET' => '\Controlador\VagaControlador#convidar',
+    ],
+    '/vaga/contratados' => [
+        'GET' => '\Controlador\VagaControlador#contratados',
     ],
     '/perfil' => [
         'GET' => '\Controlador\UsuarioControlador#perfil',
     ],
+    '/vaga' => [
+        'POST' => '\Controlador\VagaControlador#armazenar',
+        'GET' => '\Controlador\VagaControlador#alterarStatus',
+    ],
+    '/vaga/desconvidar' => [
+        'GET' => '\Controlador\VagaControlador#desconvidar',
+    ]
 ];
