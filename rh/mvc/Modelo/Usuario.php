@@ -104,9 +104,7 @@ class Usuario extends Modelo
 
     public function getTelefone()
     {
-        $telefone="(".substr($this->telefone,0,2).") ".substr($this->telefone,2,-4)."-".substr($this->telefone,-4);
-
-        return $telefone;
+        return $this->telefone;
     }
 
     public function getGenero()

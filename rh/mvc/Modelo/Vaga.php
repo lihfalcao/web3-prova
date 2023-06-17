@@ -142,12 +142,13 @@ class Vaga extends Modelo
     {
         $sqlWhere = '';
         $parametros = [];
-        if (array_key_exists('id', $filtro) && $filtro['id'] != '') {
-            $parametros[] = $filtro['id'];
-            $sqlWhere .= ' AND usuarios.id = ?';
+        if (array_key_exists('nome', $filtro) && $filtro['nome'] != '') {
+            $parametros[] = '%' . $filtro['nome'] . '%';
+            $sqlWhere .= ' AND usuarios.nome LIKE ?';
         }
 
         $sql = self::BUSCAR_TODOS . $sqlWhere . ' ORDER BY nome ASC LIMIT ' . $limit . ' OFFSET ' . $offset;
+
         $comando = DW3BancoDeDados::prepare($sql);
         foreach ($parametros as $i => $parametro) {
             $comando->bindValue($i+1, $parametro, PDO::PARAM_STR);

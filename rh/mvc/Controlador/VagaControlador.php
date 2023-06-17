@@ -117,13 +117,12 @@ class VagaControlador extends Controlador
         $chefe = Vaga::buscarChefe();
         $tipo = $usuario->getId() == $chefe->getId() ? 'chefe' : ( $usuario->isAdmin() ? 'rh' : 'programador');
         $paginacao = $this->calcularPaginacao($tipo, $usuario->getId());
-        $programadores = Usuario::buscarProgramadores();
         $this->visao('home/index.php', [
             'vagas' => $paginacao['vagas'],
             'pagina' => $paginacao['pagina'],
             'usuario' => $usuario,
             'chefe' => $chefe,
-            'programadores' => $programadores,
+            'programador' => $_GET,
             'ultimaPagina' => $paginacao['ultimaPagina'],
             'mensagemFlash' => DW3Sessao::getFlash('mensagemFlash'),
             'mensagemFlashDanger' => DW3Sessao::getFlash('mensagemFlashDanger')
